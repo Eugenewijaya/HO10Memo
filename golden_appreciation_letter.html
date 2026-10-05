@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Golden Appreciation Letter ✨</title>
+    
+    <!-- Fonts: Patrick Hand for Everything -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#FDFBF7',
+                        gold: '#D4AF37',
+                        'soft-gold': '#F9F0D0',
+                        ink: '#4A3B2C',
+                        space: '#05020a',
+                    },
+                    fontFamily: {
+                        hand: ['"Patrick Hand"', 'cursive'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom Styles -->
+    <style>
+        body {
+            background-color: #87CEEB; /* Fallback warna langit */
+            color: #FDFBF7;
+            overflow-x: hidden;
+            font-family: 'Patrick Hand', cursive;
+        }
+
+        /* Nature Background */
+        #nature-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            /* Latar belakang langit biru ala ilustrasi vector */
+            background: linear-gradient(to bottom, #a3d9f7 0%, #d4effa 100%);
+            pointer-events: none;
+        }
+
+        /* Overlay blur dihapus agar ilustrasi vektor terlihat jernih dan tajam */
+        #nature-overlay {
+            display: none;
+        }
+
+        /* Animasi partikel (serbuk sari/cahaya) di udara */
+        .nature-particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+            animation: floatParticle linear infinite;
+        }
+
+        @keyframes floatParticle {
+            0% { transform: translateY(110vh) translateX(0) scale(0.5); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) translateX(var(--drift)) scale(1.2); opacity: 0; }
+        }
+
+        /* Animasi Awan melayang */
+        .floating-cloud {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0.8;
+            animation: driftCloud linear infinite;
+        }
+
+        @keyframes driftCloud {
+            from { transform: translateX(-20vw); }
+            to { transform: translateX(120vw); }
+        }
+
+        /* Paper Texture - Kertas Memo */
+        .memo-paper {
+            background-color: #fdfbf7;
+            color: #4A3B2C;
+            /* Pola garis buku catatan */
+            background-image: 
+                linear-gradient(transparent 95%, rgba(212, 175, 55, 0.2) 100%),
+                repeating-linear-gradient(transparent, transparent 29px, #e5d3b3 29px, #e5d3b3 30px);
+            background-position: 0 40px; 
+            border-radius: 4px 4px 8px 8px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4), inset 0 0 20px rgba(212, 175, 55, 0.05);
+            position: relative;
+            margin-top: 20px;
+        }
+        
+        /* Efek robekan kertas di atas memo */
+        .memo-paper::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background-image: radial-gradient(circle at 10px 0, transparent 11px, #fdfbf7 12px);
+            background-size: 20px 20px;
+            background-repeat: repeat-x;
+        }
+
+        /* Tape effect */
+        .tape {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            width: 90px;
+            height: 30px;
+            z-index: 10;
+            backdrop-filter: blur(2px);
+        }
+
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(var(--rot, 0deg)); }
+            50% { transform: translateY(-10px) rotate(calc(var(--rot, 0deg) + 2deg)); }
+            100% { transform: translateY(0px) rotate(var(--rot, 0deg)); }
+        }
+        .floating { animation: float 6s ease-in-out infinite; }
+
+        /* Polaroid styling */
+        .polaroid {
+            background: white;
+            padding: 10px 10px 40px 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            transform-origin: center;
+        }
+        .polaroid img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: #eee;
+        }
+        
+        /* Floating Polaroids Background Anim */
+        .bg-floating-polaroid {
+            position: absolute;
+            opacity: 0.8;
+            pointer-events: none;
+            z-index: 1;
+            animation: riseUp linear infinite;
+        }
+        @keyframes riseUp {
+            0% { transform: translateY(110vh) rotate(var(--start-rot)); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-30vh) rotate(var(--end-rot)); opacity: 0; }
+        }
+
+        /* Page Transitions */
+        .page-view {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+            transform: scale(0.95);
+        }
+        .page-view.active {
+            display: flex;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Custom Buttons */
+        .btn-scrapbook {
+            background: linear-gradient(135deg, #FDFBF7, #F9F0D0);
+            border: 1px solid #E5D3B3;
+            color: #4A3B2C;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Patrick Hand', cursive;
+        }
+        .btn-scrapbook:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #E5D3B3; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #D4AF37; }
+        
+        .glass-panel {
+            background: rgba(253, 251, 247, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- NEW: INTERACTIVE POLAROID STYLES & ANIMATIONS --- */
+        .polaroid-interactive {
+            animation-fill-mode: forwards;
+            animation-duration: 0.8s;
+            animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+            cursor: pointer;
+            transform: rotate(var(--rot));
+            opacity: 0; 
+        }
+        
+        .polaroid-interactive:hover {
+            /* Saat di-hover, foto lurus, membesar, dan terangkat ke atas layer lain */
+            transform: scale(1.15) rotate(0deg) !important; 
+            z-index: 100 !important;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        /* 10 Animasi Unik untuk Setiap Divisi */
+        @keyframes animDrop { 0% { transform: translateY(-100vh) rotate(var(--start-rot)); opacity: 0; } 100% { transform: translateY(0) rotate(var(--rot)); opacity: 1; } }
+        @keyframes animSlide { 0% { transform: translateX(100vw) rotate(var(--start-rot)); opacity: 0; } 100% { transform: translateX(0) rotate(var(--rot)); opacity: 1; } }
+        @keyframes animFlip { 0% { transform: perspective(1000px) rotateY(90deg) rotate(var(--start-rot)); opacity: 0; } 100% { transform: perspective(1000px) rotateY(0deg) rotate(var(--rot)); opacity: 1; } }
+        @keyframes animSettle { 0% { transform: scale(2) rotate(calc(var(--rot) + 45deg)); opacity: 0; filter: blur(5px); } 100% { transform: scale(1) rotate(var(--rot)); opacity: 1; filter: blur(0); } }
+        @keyframes animPop { 0% { transform: translateY(100px) scale(0.5) rotate(var(--start-rot)); opacity: 0; } 100% { transform: translateY(0) scale(1) rotate(var(--rot)); opacity: 1; } }
+        @keyframes animSwing { 0% { transform: rotate3d(0, 0, 1, 60deg); transform-origin: top center; opacity: 0; } 100% { transform: rotate3d(0, 0, 1, var(--rot)); transform-origin: center; opacity: 1; } }
+        @keyframes animFloat { 0% { transform: translateY(50px) rotate(var(--rot)); opacity: 0; } 100% { transform: translateY(0) rotate(var(--rot)); opacity: 1; } }
+        @keyframes animZoom { 0% { transform: scale(0) rotate(var(--start-rot)); opacity: 0; } 60% { transform: scale(1.2) rotate(var(--rot)); opacity: 1; } 100% { transform: scale(1) rotate(var(--rot)); opacity: 1; } }
+        @keyframes animFadeRot { 0% { transform: rotate(calc(var(--rot) - 90deg)); opacity: 0; } 100% { transform: rotate(var(--rot)); opacity: 1; } }
+        @keyframes animStamp { 0% { transform: scale(3) rotate(var(--rot)); opacity: 0; } 100% { transform: scale(1) rotate(var(--rot)); opacity: 1; } }
+
+        .anim-drop { animation-name: animDrop; }
+        .anim-slide { animation-name: animSlide; }
+        .anim-flip { animation-name: animFlip; }
+        .anim-settle { animation-name: animSettle; }
+        .anim-pop { animation-name: animPop; }
+        .anim-swing { animation-name: animSwing; }
+        .anim-float { animation-name: animFloat; }
+        .anim-zoom { animation-name: animZoom; }
+        .anim-fade-rot { animation-name: animFadeRot; }
+        .anim-stamp { animation-name: animStamp; }
+    </style>
+</head>
+<body class="min-h-screen relative font-hand selection:bg-gold selection:text-white">
+
+    <!-- Audio Player Placeholder dipindah ke atas tengah -->
+    <div class="fixed top-4 left-1/2 -translate-x-1/2 z-50">
+        <button id="btn-audio" class="px-4 py-2 rounded-full glass-panel shadow-sm text-lg hover:bg-white/10 transition-colors flex items-center gap-2 text-white">
+            <span>♪</span> Music: Off
+        </button>
+        <audio id="bg-music" loop>
+            <source src="" type="audio/mpeg"> 
+        </audio>
+    </div>
+
+    <!-- Nature Scene Background -->
+    <div id="nature-bg">
+        <div id="nature-overlay"></div>
+        <div id="nature-clouds" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
+        <div id="nature-particles" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
+        
+        <div class="absolute bottom-0 left-0 w-full h-[25vh] sm:h-[35vh] pointer-events-none overflow-hidden z-10">
+            <svg viewBox="0 0 1200 300" preserveAspectRatio="none" class="absolute bottom-0 w-full h-full">
+                <!-- Bukit Belakang (Hijau Gelap) -->
+                <path d="M0,150 Q300,200 600,120 T1200,160 L1200,300 L0,300 Z" fill="#73b022"/>
+                <!-- Rerumputan bukit belakang -->
+                <path d="M480,128 l4,-15 l6,15 l5,-22 l5,22 l4,-12 l4,12 Z" fill="#73b022"/>
+                <path d="M850,150 l3,-12 l5,12 l4,-18 l4,18 l3,-8 l3,8 Z" fill="#73b022"/>
+                <path d="M180,165 l4,-12 l5,12 l5,-18 l5,18 l4,-10 l4,10 Z" fill="#73b022"/>
+                
+                <!-- Bukit Depan (Hijau Terang) -->
+                <path d="M0,220 Q400,160 800,240 T1200,200 L1200,300 L0,300 Z" fill="#88c425"/>
+                <!-- Rerumputan bukit depan -->
+                <path d="M520,205 l5,-20 l8,20 l7,-28 l7,28 l5,-15 l5,15 Z" fill="#88c425"/>
+                <path d="M220,200 l4,-18 l6,18 l5,-25 l5,25 l4,-12 l4,12 Z" fill="#88c425"/>
+                <path d="M950,225 l4,-12 l6,12 l5,-20 l5,20 l4,-8 l4,8 Z" fill="#88c425"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <main class="relative z-10 w-full min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 overflow-hidden">
+        
+        <!-- Floating Polaroids Container -->
+        <div id="floating-polaroids-container" class="absolute inset-0 w-full h-full pointer-events-none overflow-hidden"></div>
+
+        <!-- ============================================== -->
+        <!-- VIEW 1: COVER -->
+        <!-- ============================================== -->
+        <section id="view-cover" class="page-view active flex-col items-center justify-center w-full max-w-4xl min-h-[80vh] z-20">
+            <div class="relative w-full max-w-2xl mx-auto flex flex-col items-center mt-10">
+                
+                <div class="absolute -top-12 -left-4 sm:-left-16 w-24 sm:w-32 polaroid floating" style="--rot: -15deg; transform: rotate(-15deg);">
+                    <img src="https://placehold.co/300x300/e0d8c8/4A3B2C?text=Memory" alt="Scrapbook Memory" class="rounded-sm">
+                </div>
+                <div class="absolute top-20 -right-8 sm:-right-24 w-28 sm:w-36 polaroid floating" style="--rot: 10deg; transform: rotate(10deg); animation-delay: 1s;">
+                    <img src="https://placehold.co/300x300/e0d8c8/4A3B2C?text=Smile" alt="Scrapbook Photo" class="rounded-sm">
+                </div>
+
+                <!-- Main Card (Memo style) -->
+                <div class="memo-paper w-full p-8 sm:p-12 flex flex-col items-center text-center relative z-10 border-t-0">
+                    <div class="tape -top-5 left-1/2 -translate-x-1/2" style="transform: translateX(-50%) rotate(-2deg);"></div>
+                    
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-white shadow-lg overflow-hidden mb-4 relative z-10 mt-4">
+                        <img id="epid-photo" src="https://placehold.co/200x200/d4af37/ffffff?text=Epid" alt="Epid PIC" class="w-full h-full object-cover">
+                    </div>
+                    
+                    <span class="text-sm sm:text-lg font-bold tracking-widest text-gold uppercase mb-2">PIC Dokumentasi</span>
+                    <h1 class="text-5xl sm:text-7xl text-ink mb-6 drop-shadow-sm font-bold">Epid</h1>
+                    
+                    <p class="text-lg sm:text-xl text-ink/80 max-w-md mx-auto mb-10 leading-relaxed">
+                        A Golden Appreciation Letter & Memory Journal.<br>
+                        "For the moments we captured and the memories we shared."
+                    </p>
+                    
+                    <button onclick="goToView('view-letter-intro')" class="btn-scrapbook text-xl font-bold px-10 py-3 rounded-full flex items-center gap-2">
+                        Greeting <span class="text-gold">✨</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW 2: OPEN MESSAGE -->
+        <!-- ============================================== -->
+        <section id="view-letter-intro" class="page-view flex-col items-center justify-center w-full max-w-3xl min-h-[80vh] z-20">
+            <div id="envelope-card" class="memo-paper w-full aspect-[4/3] max-w-lg relative flex items-center justify-center cursor-pointer hover:shadow-2xl transition-all duration-500 group" onclick="openEnvelope()">
+                <div class="text-center relative z-10 group-hover:-translate-y-3 transition-transform duration-300">
+                    <div class="text-5xl mb-4 group-hover:scale-125 group-hover:rotate-12 transition-all">💌</div>
+                    <h2 class="text-4xl sm:text-5xl text-ink font-bold">Untuk Kalian...</h2>
+                    <p class="text-xl text-ink/70 mt-2">Tap untuk membuka pesan</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW 3: MESSAGE FROM EPID -->
+        <!-- ============================================== -->
+        <section id="view-epid-message" class="page-view flex-col items-center justify-center w-full max-w-4xl min-h-[80vh] z-20">
+            <div class="memo-paper w-full p-8 sm:p-12 md:p-16 relative text-left">
+                <div class="tape top-2 -right-6" style="transform: rotate(45deg);"></div>
+                <div class="tape top-2 -left-6" style="transform: rotate(-45deg);"></div>
+                
+                <div class="text-2xl sm:text-3xl md:text-4xl leading-relaxed text-ink space-y-6 pt-4">
+                    <p>Terima kasih sudah menjadi bagian dari perjalanan acara ini.</p>
+                    <p>Mungkin selama acara kita sibuk dengan tugas masing-masing, mengejar waktu, memastikan semuanya berjalan, dan kadang bahkan lupa menikmati momennya.</p>
+                    <p>Tapi dari balik kamera, aku melihat banyak hal kecil yang menurutku layak untuk diingat.</p>
+                    <p>Senyum. Kepanikan kecil. Ketawa. Capek. Kerja sama.</p>
+                    <p>Dan semua momen random yang akhirnya justru jadi cerita.</p>
+                    <p>Jadi sebelum dokumentasinya aku bagikan...<br>aku mau menyampaikan sedikit pesan untuk kalian.</p>
+                </div>
+
+                <div class="mt-12 flex justify-between items-end border-t border-ink/10 pt-6">
+                    <div class="text-3xl font-bold">
+                        <span class="block text-ink/60 text-xl font-normal">Salam hangat,</span>
+                        Epid <span class="text-gold">✨</span>
+                    </div>
+                    <button onclick="startDivisions()" class="btn-scrapbook text-xl px-8 py-2 rounded-full">
+                        Lanjut →
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW 4: DIVISIONS (Dynamic) -->
+        <!-- ============================================== -->
+        <section id="view-division" class="page-view flex-col w-full max-w-5xl min-h-[90vh] z-20">
+            <!-- Dynamic Content Injected Here by JS -->
+            <div id="division-content" class="w-full h-full flex flex-col items-center flex-grow transition-all duration-500"></div>
+            
+            <!-- Navigation -->
+            <div class="w-full flex justify-between items-center mt-12 glass-panel p-3 sm:p-5 rounded-2xl shadow-xl border border-white/20 relative z-40">
+                <button onclick="prevDivision()" id="btn-prev-div" class="text-xl sm:text-2xl text-white hover:text-gold px-4 py-2 flex items-center transition-colors">
+                    ← Prev
+                </button>
+                <div class="text-2xl sm:text-3xl text-ink bg-white/90 px-6 py-1 rounded-full shadow-inner font-bold">
+                    Memory <span id="div-counter" class="text-gold">01 / 10</span>
+                </div>
+                <button onclick="nextDivision()" id="btn-next-div" class="text-xl sm:text-2xl text-white hover:text-gold px-4 py-2 flex items-center transition-colors">
+                    Next →
+                </button>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW 5: CLOSING MESSAGE -->
+        <!-- ============================================== -->
+        <section id="view-closing" class="page-view flex-col items-center justify-center w-full max-w-4xl min-h-[80vh] relative z-20">
+            <div class="memo-paper w-full p-8 sm:p-12 md:p-16 relative text-center z-10 shadow-2xl" style="transform: rotate(1deg);">
+                <div class="tape -top-5 left-1/2 -translate-x-1/2" style="transform: translateX(-50%) rotate(0deg); width: 120px;"></div>
+                
+                <h2 class="text-5xl sm:text-6xl text-ink font-bold mb-8 mt-4">Before You Go... 🤍</h2>
+                
+                <div class="text-2xl sm:text-3xl leading-relaxed text-ink/90 space-y-4 max-w-2xl mx-auto">
+                    <p>Setelah semua cerita, kerja keras, ketawa, capek, dan momen-momen random yang kita lewati bareng...</p>
+                    <p>akhirnya sampai juga di bagian terakhir.</p>
+                    <p>Terima kasih sudah memberikan waktu, tenaga, ide, dan energi kalian selama acara ini.</p>
+                    <p class="font-bold">Mungkin nggak semua momen sempat kita sadari.</p>
+                    <p>Tapi untungnya... ada dokumentasi yang menyimpannya.</p>
+                    <p class="font-bold mt-6">Dan sekarang, saatnya aku berbagi semuanya.</p>
+                </div>
+
+                <div class="mt-12">
+                    <button onclick="goToView('view-drive')" class="btn-scrapbook font-bold text-ink px-10 py-4 rounded-full text-2xl shadow-xl shadow-gold/20 inline-flex items-center gap-3">
+                        Lanjut ke Dokumentasi 📸
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW 6: GOOGLE DRIVE LINK -->
+        <!-- ============================================== -->
+        <section id="view-drive" class="page-view flex-col items-center justify-center w-full max-w-3xl min-h-[80vh] z-20">
+            <div class="text-center mb-8 bg-black/40 p-6 rounded-3xl backdrop-blur-md border border-white/10 shadow-2xl">
+                <h2 class="text-5xl sm:text-6xl text-gold font-bold mb-2">Your Memories Are Here ✨</h2>
+                <p class="text-2xl text-white/90">Semua momen yang sempat kami tangkap selama acara.</p>
+            </div>
+
+            <div class="memo-paper w-full p-8 sm:p-12 flex flex-col items-center text-center">
+                <div class="w-20 h-20 bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center text-5xl mb-6 shadow-inner mt-4">
+                    📁
+                </div>
+                <h3 class="text-3xl font-bold text-ink mb-2">DOCUMENTATION DRIVE</h3>
+                <p class="text-xl text-ink/70 mb-8 max-w-sm">"Foto, video, dan berbagai dokumentasi acara tersedia di sini."</p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 w-full justify-center">
+                    <a id="link-drive-btn" href="#" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-2xl px-8 py-3 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2">
+                        Buka Google Drive ↗
+                    </a>
+                    <button onclick="copyDriveLink()" class="bg-white border-2 border-gray-200 hover:border-gold hover:text-gold text-ink font-bold text-2xl px-8 py-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2">
+                        Copy Link 🔗
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-white text-ink text-2xl font-bold px-8 py-3 rounded-full shadow-2xl transition-all duration-300 opacity-0 translate-y-10 pointer-events-none z-50 flex items-center gap-2 border-2 border-gold">
+        Link berhasil disalin! ✨
+    </div>
+
+    <script>
+        /* 
+         * DATA KONFIGURASI (Silakan Edit)
+         */
+        const CONFIG = {
+            driveLink: "https://drive.google.com/drive/folders/CONTOH_LINK_PLACEHOLDER",
+            epidPhoto: "https://placehold.co/200x200/d4af37/ffffff?text=Epid",
+            audioUrl: "" // Isi URL audio mp3 di sini
+        };
+
+        const appreciationData = [
+            {
+                name: "DIVISI ACARA",
+                message: "[Tulis pesan untuk Divisi Acara di sini. Terima kasih atas rundown yang keren!]",
+                closing: "Thank you for being part of this journey. 🤍",
+                photos: [
+                    "https://placehold.co/400x400/e0d8c8/4A3B2C?text=Acara+1",
+                    "https://placehold.co/400x500/e0d8c8/4A3B2C?text=Acara+2",
+                    "https://placehold.co/500x400/e0d8c8/4A3B2C?text=Acara+3",
+                    "https://placehold.co/400x400/e0d8c8/4A3B2C?text=Acara+4"
+                ]
+            },
+            {
+                name: "DIVISI HUMAS",
+                message: "[Tulis pesan untuk Divisi Humas di sini. Komunikasi kalian luar biasa!]",
+                closing: "Every word you sent mattered. ✨",
+                photos: [
+                    "https://placehold.co/400x400/d9cfbc/4A3B2C?text=Humas+1",
+                    "https://placehold.co/500x400/d9cfbc/4A3B2C?text=Humas+2",
+                    "https://placehold.co/400x500/d9cfbc/4A3B2C?text=Humas+3"
+                ]
+            },
+            {
+                name: "DIVISI PERLENGKAPAN",
+                message: "[Tulis pesan apresiasi untuk Divisi Perlengkapan di sini.]",
+                closing: "You hold everything together. 🛠️",
+                photos: [
+                    "https://placehold.co/400x400/c9bfa8/4A3B2C?text=Perlap+1",
+                    "https://placehold.co/400x500/c9bfa8/4A3B2C?text=Perlap+2",
+                    "https://placehold.co/500x400/c9bfa8/4A3B2C?text=Perlap+3",
+                    "https://placehold.co/400x400/c9bfa8/4A3B2C?text=Perlap+4"
+                ]
+            },
+            {
+                name: "DIVISI KONSUMSI",
+                message: "[Tulis pesan apresiasi untuk Divisi Konsumsi di sini.]",
+                closing: "Fueling our passion (and tummies). 🍕",
+                photos: [
+                    "https://placehold.co/500x400/e8dfcc/4A3B2C?text=Konsum+1",
+                    "https://placehold.co/400x400/e8dfcc/4A3B2C?text=Konsum+2",
+                    "https://placehold.co/400x500/e8dfcc/4A3B2C?text=Konsum+3"
+                ]
+            },
+            {
+                name: "DIVISI KESTARI",
+                message: "[Tulis pesan apresiasi untuk Kesekretariatan.]",
+                closing: "The unsung heroes of paperwork. 📝",
+                photos: [
+                    "https://placehold.co/400x400/d1c7b3/4A3B2C?text=Kestari+1",
+                    "https://placehold.co/500x500/d1c7b3/4A3B2C?text=Kestari+2",
+                    "https://placehold.co/400x400/d1c7b3/4A3B2C?text=Kestari+3",
+                    "https://placehold.co/500x400/d1c7b3/4A3B2C?text=Kestari+4"
+                ]
+            },
+            {
+                name: "DIVISI SPONSORSHIP",
+                message: "[Tulis pesan apresiasi untuk Divisi Sponsorship.]",
+                closing: "Making dreams financially possible. 💰",
+                photos: [
+                    "https://placehold.co/400x500/e3dac4/4A3B2C?text=Sponsor+1",
+                    "https://placehold.co/400x400/e3dac4/4A3B2C?text=Sponsor+2",
+                    "https://placehold.co/500x400/e3dac4/4A3B2C?text=Sponsor+3"
+                ]
+            },
+            {
+                name: "DIVISI PUBLIKASI",
+                message: "[Tulis pesan apresiasi untuk Publikasi.]",
+                closing: "Painting our event in the best colors. 🎨",
+                photos: [
+                    "https://placehold.co/500x500/d6ccb8/4A3B2C?text=Pubdek+1",
+                    "https://placehold.co/400x400/d6ccb8/4A3B2C?text=Pubdek+2",
+                    "https://placehold.co/400x500/d6ccb8/4A3B2C?text=Pubdek+3",
+                    "https://placehold.co/500x400/d6ccb8/4A3B2C?text=Pubdek+4"
+                ]
+            },
+            {
+                name: "DIVISI KEAMANAN",
+                message: "[Tulis pesan apresiasi untuk Keamanan.]",
+                closing: "Our guardians. 🛡️",
+                photos: [
+                    "https://placehold.co/400x400/c4bba6/4A3B2C?text=Keamanan+1",
+                    "https://placehold.co/500x400/c4bba6/4A3B2C?text=Keamanan+2",
+                    "https://placehold.co/400x500/c4bba6/4A3B2C?text=Keamanan+3"
+                ]
+            },
+            {
+                name: "DIVISI MEDIS",
+                message: "[Tulis pesan apresiasi untuk Medis.]",
+                closing: "Caring hearts, quick hands. 🩺",
+                photos: [
+                    "https://placehold.co/400x500/e8dfcc/4A3B2C?text=Medis+1",
+                    "https://placehold.co/400x400/e8dfcc/4A3B2C?text=Medis+2",
+                    "https://placehold.co/500x400/e8dfcc/4A3B2C?text=Medis+3",
+                    "https://placehold.co/400x400/e8dfcc/4A3B2C?text=Medis+4"
+                ]
+            },
+            {
+                name: "DIVISI DOKUMENTASI",
+                message: "[Sebuah pesan khusus untuk timku sendiri. Kalian luar biasa!]",
+                closing: "The memory keepers. 📸🤍",
+                photos: [
+                    "https://placehold.co/400x400/d4af37/ffffff?text=Dokum+1",
+                    "https://placehold.co/500x400/d4af37/ffffff?text=Dokum+2",
+                    "https://placehold.co/400x500/d4af37/ffffff?text=Dokum+3",
+                    "https://placehold.co/500x500/d4af37/ffffff?text=Dokum+4"
+                ]
+            }
+        ];
+
+        /* ================= STATE & INIT ================= */
+        let currentStepId = 'view-cover';
+        let currentDivIndex = 0;
+        let floatingPolaroidInterval = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('epid-photo').src = CONFIG.epidPhoto;
+            document.getElementById('link-drive-btn').href = CONFIG.driveLink;
+            setupAudio();
+            initNatureBackground();
+        });
+
+        /* ================= NAVIGATION ================= */
+        function openEnvelope() {
+            const env = document.getElementById('envelope-card');
+            // Efek amplop terbuka (zoom in dan menghilang)
+            env.style.transform = 'scale(1.2) rotateX(15deg)';
+            env.style.opacity = '0';
+            setTimeout(() => goToView('view-epid-message'), 400);
+        }
+
+        function goToView(targetId) {
+            const currentEl = document.getElementById(currentStepId);
+            currentEl.classList.remove('active');
+            
+            // Stop floating polaroids if leaving division view
+            if(targetId !== 'view-division') {
+                clearInterval(floatingPolaroidInterval);
+                document.getElementById('floating-polaroids-container').innerHTML = '';
+            }
+
+            setTimeout(() => {
+                currentStepId = targetId;
+                const targetEl = document.getElementById(targetId);
+                targetEl.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 800);
+        }
+
+        function startDivisions() {
+            currentDivIndex = 0;
+            renderDivision();
+            goToView('view-division');
+            startFloatingPolaroids();
+        }
+
+        function nextDivision() {
+            if (currentDivIndex < appreciationData.length - 1) {
+                transitionDivision(1);
+            } else {
+                goToView('view-closing');
+            }
+        }
+
+        function prevDivision() {
+            if (currentDivIndex > 0) {
+                transitionDivision(-1);
+            } else {
+                goToView('view-epid-message');
+            }
+        }
+
+        function transitionDivision(step) {
+            const content = document.getElementById('division-content');
+            
+            // Animasi kertas terlempar keluar (swipe out)
+            content.style.transition = 'transform 0.4s cubic-bezier(0.8, -0.2, 0.2, 1.2), opacity 0.3s ease';
+            content.style.transform = step > 0 ? 'translateX(-40vw) rotate(-15deg) scale(0.9)' : 'translateX(40vw) rotate(15deg) scale(0.9)';
+            content.style.opacity = '0';
+            
+            setTimeout(() => {
+                currentDivIndex += step;
+                renderDivision();
+                
+                // Siapkan posisi dari arah berlawanan untuk masuk
+                content.style.transition = 'none';
+                content.style.transform = step > 0 ? 'translateX(40vw) rotate(15deg) scale(0.9)' : 'translateX(-40vw) rotate(-15deg) scale(0.9)';
+                
+                // Trigger masuk kembali ke tengah
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        content.style.transition = 'transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1.1), opacity 0.5s ease';
+                        content.style.transform = 'translateX(0) rotate(0) scale(1)';
+                        content.style.opacity = '1';
+                    });
+                });
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 400);
+        }
+
+        function renderDivision() {
+            const data = appreciationData[currentDivIndex];
+            const container = document.getElementById('division-content');
+            
+            document.getElementById('div-counter').innerText = 
+                `${String(currentDivIndex + 1).padStart(2, '0')} / ${appreciationData.length}`;
+            
+            document.getElementById('btn-prev-div').innerHTML = currentDivIndex === 0 ? '← Intro' : '← Prev';
+            document.getElementById('btn-next-div').innerHTML = currentDivIndex === appreciationData.length - 1 ? 'Closing →' : 'Next →';
+
+            const animTypes = ['anim-drop', 'anim-slide', 'anim-flip', 'anim-settle', 'anim-pop', 'anim-swing', 'anim-float', 'anim-zoom', 'anim-fade-rot', 'anim-stamp'];
+            const currentAnim = animTypes[currentDivIndex % animTypes.length];
+
+            const totalPhotos = (data.photos || []).length;
+            const photosHtml = (data.photos || []).map((photo, i) => {
+                const rot = (Math.random() - 0.5) * 30; // Rotasi akhir acak
+                const startRot = (Math.random() - 0.5) * 180; // Rotasi awal saat animasi masuk
+                
+                // PERBAIKAN LAYOUT: Kumpulkan foto di area 30% hingga 70% saja agar aman & tidak terpotong tepi layar
+                const step = totalPhotos > 1 ? 40 / (totalPhotos - 1) : 0;
+                const baseLeft = totalPhotos === 1 ? 50 : 30 + (i * step); 
+                const leftPos = baseLeft + (Math.random() - 0.5) * 4; 
+                const topPos = (Math.random() - 0.5) * 20; 
+                
+                const delay = i * 0.15; // Berikan jeda masuk
+                
+                return `
+                <div class="absolute" style="left: ${leftPos}%; top: ${topPos}px; z-index: ${30 + i}; transform: translateX(-50%);">
+                    <div class="polaroid-interactive ${currentAnim}" 
+                         style="--rot: ${rot}deg; --start-rot: ${startRot}deg; animation-delay: ${delay}s;">
+                        <div class="bg-white p-2 sm:p-3 pb-8 sm:pb-10 shadow-xl rounded-sm border border-gray-200">
+                            <img src="${photo}" alt="Memory" loading="lazy" class="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 object-cover bg-gray-200">
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+
+            container.innerHTML = `
+                <!-- Title Section -->
+                <div class="text-center mb-10 sm:mb-16 relative w-full pt-4 z-40 text-reveal">
+                    <h2 class="text-5xl sm:text-7xl text-ink font-bold mb-2 drop-shadow-sm">${data.name}</h2>
+                    <p class="text-xl sm:text-2xl text-ink/80">A little message for you ✨</p>
+                </div>
+
+                <!-- Polaroids Container Interaktif -->
+                <div class="relative w-full h-40 sm:h-56 flex justify-center items-center z-20 mb-6">
+                    ${photosHtml}
+                </div>
+
+                <!-- Memo Paper Message (Menghapus inline opacity: 0 agar CSS jalan sempurna) -->
+                <div class="memo-paper paper-animate w-full max-w-3xl p-8 sm:p-12 relative transition-all duration-500 hover:shadow-2xl z-30" style="animation-delay: 0.3s;">
+                    <div class="tape -top-5 left-1/2 -translate-x-1/2" style="transform: translateX(-50%) rotate(1deg);"></div>
+                    
+                    <p class="text-lg font-bold text-ink/50 uppercase tracking-widest mb-4 mt-2 text-reveal" style="animation-delay: 0.5s;">A little note for ${data.name}</p>
+                    
+                    <div class="text-2xl sm:text-3xl leading-relaxed text-ink mb-6 pt-2 text-reveal" style="animation-delay: 0.7s;">
+                        ${data.message}
+                    </div>
+                    
+                    <div class="text-xl sm:text-2xl text-ink/80 italic text-right mt-8 border-t border-ink/10 pt-4 flex items-center justify-end gap-2 text-reveal" style="animation-delay: 0.9s;">
+                        ${data.closing}
+                    </div>
+                </div>
+            `;
+        }
+
+        /* Generate continuous floating polaroids from current division's photos */
+        function startFloatingPolaroids() {
+            const container = document.getElementById('floating-polaroids-container');
+            container.innerHTML = '';
+            
+            clearInterval(floatingPolaroidInterval);
+            
+            // Create a polaroid every 2 seconds
+            floatingPolaroidInterval = setInterval(() => {
+                if (currentStepId !== 'view-division') return;
+                
+                const data = appreciationData[currentDivIndex];
+                if(!data || !data.photos || data.photos.length === 0) return;
+                
+                const randomPhoto = data.photos[Math.floor(Math.random() * data.photos.length)];
+                
+                const el = document.createElement('div');
+                el.className = 'bg-floating-polaroid polaroid w-32 sm:w-48';
+                
+                // Random properties
+                const left = Math.random() * 80 + 10; // 10% to 90% width
+                const startRot = Math.random() * 40 - 20; // -20 to 20 deg
+                const endRot = startRot + (Math.random() * 60 - 30);
+                const duration = Math.random() * 10 + 15; // 15 to 25 seconds
+                
+                el.style.left = `${left}%`;
+                el.style.setProperty('--start-rot', `${startRot}deg`);
+                el.style.setProperty('--end-rot', `${endRot}deg`);
+                el.style.animationDuration = `${duration}s`;
+                
+                el.innerHTML = `
+                    <div class="w-full h-32 sm:h-48">
+                        <img src="${randomPhoto}" alt="Memory" loading="lazy" class="w-full h-full object-cover">
+                    </div>
+                `;
+                
+                container.appendChild(el);
+                
+                // Cleanup after animation finishes
+                setTimeout(() => {
+                    if (el.parentNode) el.parentNode.removeChild(el);
+                }, duration * 1000);
+                
+            }, 2000);
+        }
+
+        /* ================= UTILS ================= */
+        function copyDriveLink() {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(CONFIG.driveLink).then(showToast);
+            } else {
+                let textArea = document.createElement("textarea");
+                textArea.value = CONFIG.driveLink;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-999999px";
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showToast();
+                } catch (error) {
+                    console.error('Failed to copy', error);
+                }
+                textArea.remove();
+            }
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.style.opacity = '1';
+            toast.style.transform = 'translate(-50%, 0)';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translate(-50%, 40px)';
+            }, 3000);
+        }
+
+        function setupAudio() {
+            const audio = document.getElementById('bg-music');
+            const btn = document.getElementById('btn-audio');
+            
+            if(!CONFIG.audioUrl) {
+                btn.style.display = 'none';
+                return;
+            }
+
+            let isPlaying = false;
+            btn.addEventListener('click', () => {
+                if (isPlaying) {
+                    audio.pause();
+                    btn.innerHTML = `<span>♪</span> Music: Off`;
+                    isPlaying = false;
+                } else {
+                    audio.play().catch(e => console.log("Audio play failed"));
+                    btn.innerHTML = `<span class="animate-pulse text-gold">♫</span> Music: On`;
+                    isPlaying = true;
+                }
+            });
+        }
+
+        /* ================= NATURE BACKGROUND ANIMATION ================= */
+        function initNatureBackground() {
+            const container = document.getElementById('nature-particles');
+            
+            // Create Floating Particles (Serbuk sari/cahaya ditiup angin)
+            for(let i = 0; i < 40; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'nature-particle';
+                
+                const size = Math.random() * 4 + 2; 
+                const left = Math.random() * 100; 
+                const duration = Math.random() * 15 + 10; 
+                const delay = Math.random() * 10;
+                const drift = (Math.random() - 0.5) * 200; 
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${left}%`;
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.animationDelay = `-${delay}s`; 
+                particle.style.setProperty('--drift', `${drift}px`);
+                
+                container.appendChild(particle);
+            }
+
+            // Create Animated SVG Clouds (Diperbaiki agar tidak terpotong)
+            const cloudContainer = document.getElementById('nature-clouds');
+            const svgs = [
+                `<svg viewBox="0 0 200 100" fill="#ffffff" xmlns="http://www.w3.org/2000/svg" style="overflow: visible;"><path d="M 50,80 a 20,20 0 0,1 0,-40 a 30,30 0 0,1 60,-10 a 25,25 0 0,1 40,10 a 20,20 0 0,1 0,40 z"/></svg>`,
+                `<svg viewBox="0 0 250 100" fill="#ffffff" xmlns="http://www.w3.org/2000/svg" style="overflow: visible;"><path d="M 60,80 a 25,25 0 0,1 0,-50 a 35,35 0 0,1 70,-15 a 30,30 0 0,1 50,25 a 20,20 0 0,1 0,40 z"/></svg>`
+            ];
+
+            for(let i = 0; i < 7; i++) {
+                const cloud = document.createElement('div');
+                cloud.className = 'floating-cloud';
+                cloud.innerHTML = svgs[i % 2];
+                
+                const width = Math.random() * 200 + 150; 
+                const top = Math.random() * 40; // Awan hanya di area atas (langit)
+                const duration = Math.random() * 80 + 50; 
+                const delay = Math.random() * -80; 
+                
+                cloud.style.width = `${width}px`;
+                cloud.style.top = `${top}%`;
+                cloud.style.animationDuration = `${duration}s`;
+                cloud.style.animationDelay = `${delay}s`;
+                // Opacity dibuat lebih tinggi agar awannya solid tebal putih
+                cloud.style.opacity = Math.random() * 0.3 + 0.6; 
+                
+                cloudContainer.appendChild(cloud);
+            }
+        }
+    </script>
+</body>
+</html>

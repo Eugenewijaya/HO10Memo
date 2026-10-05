@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#1d0c3d">
+    <title>A Golden Appreciation Letter ✨</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Patrick+Hand&family=Playfair+Display:ital,wght@0,700;0,800;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="mode-space">
+
+    <!-- ===== Lapisan background (bawah → atas) ===== -->
+    <div class="bg" id="bg-space"></div>
+    <div class="bg" id="bg-slides"></div>
+    <div class="bg" id="bg-tint"></div>
+    <div class="bg" id="bg-rays"></div>
+    <canvas id="fx" aria-hidden="true"></canvas>
+
+    <button id="btn-audio" class="audio-btn" hidden aria-label="Putar musik">♪</button>
+
+    <main id="stage">
+
+        <!-- ========== 1. COVER DEPAN ========== -->
+        <section id="view-cover" class="view active">
+            <div class="cover">
+                <i class="corner tl">✦</i><i class="corner tr">✦</i><i class="corner bl">✦</i><i class="corner br">✦</i>
+                <div class="cover-pol cover-pol-1" hidden><img alt=""></div>
+                <div class="cover-pol cover-pol-2" hidden><img alt=""></div>
+
+                <span class="eyebrow">✦ Memory Journal ✦</span>
+                <h1 class="cover-title gold-text">A Golden<br>Appreciation<br>Letter</h1>
+
+                <div class="avatar"><img id="epid-photo" alt="Foto Epid"></div>
+                <p class="cover-from">dari <b id="epid-name">Epid</b></p>
+                <p class="cover-role" id="epid-role">PIC Dokumentasi</p>
+
+                <p class="cover-quote">"For the moments we captured and the memories we shared."</p>
+
+                <button id="btn-open" class="btn pulse">Buka Pesan 💌</button>
+            </div>
+        </section>
+
+        <!-- ========== 2. PESAN PEMBUKA ========== -->
+        <section id="view-message" class="view">
+            <article class="paper pa-1" style="--tilt:-.6deg">
+                <div class="tape" style="left:50%;top:-14px;transform:translateX(-50%) rotate(-2deg)"></div>
+                <p class="p-label rv" style="--i:0">Sebuah pesan untuk kalian</p>
+                <div id="intro-text"></div>
+                <div class="paper-foot rv" style="--i:8">
+                    <div class="sign">Salam hangat,<br><span id="sign-name">Epid</span> ✨</div>
+                    <button id="btn-start" class="btn">Lanjut →</button>
+                </div>
+            </article>
+        </section>
+
+        <!-- ========== 3. DIVISI (dirender JS) ========== -->
+        <section id="view-division" class="view">
+            <div id="division-content"></div>
+            <nav class="nav" aria-label="Navigasi divisi">
+                <button id="btn-prev" class="nav-btn" aria-label="Sebelumnya">←</button>
+                <div class="nav-mid">
+                    <span id="div-counter">01 / 10</span>
+                    <div class="bar"><i id="div-bar"></i></div>
+                </div>
+                <button id="btn-next" class="nav-btn" aria-label="Berikutnya">→</button>
+            </nav>
+        </section>
+
+        <!-- ========== 4. PENUTUP ========== -->
+        <section id="view-closing" class="view">
+            <article class="paper pa-3 no-rule center" style="--tilt:.8deg">
+                <div class="tape" style="left:50%;top:-14px;transform:translateX(-50%);width:120px"></div>
+                <h2 class="closing-title gold-text rv" style="--i:0">Before You Go... 🤍</h2>
+                <div id="closing-text"></div>
+                <div class="rv" style="--i:9;margin-top:1.8rem">
+                    <button id="btn-to-drive" class="btn pulse">Lanjut ke Dokumentasi 📸</button>
+                </div>
+            </article>
+        </section>
+
+        <!-- ========== 5. GOOGLE DRIVE ========== -->
+        <section id="view-drive" class="view">
+            <h2 class="closing-title gold-text rv" style="--i:0;text-align:center">Your Memories<br>Are Here ✨</h2>
+            <p class="drive-sub rv" style="--i:1">Semua momen yang sempat kami tangkap selama acara.</p>
+            <article class="paper pa-4 no-rule center" style="--tilt:-.5deg;margin-top:1.6rem">
+                <div class="tape" style="left:50%;top:-14px;transform:translateX(-50%) rotate(1deg)"></div>
+                <div class="drive-icon rv" style="--i:2">📁</div>
+                <h3 class="drive-title rv" style="--i:3">DOCUMENTATION DRIVE</h3>
+                <p class="rv" style="--i:4;margin:.4rem 0 1.5rem;color:var(--ink-dim)">"Foto, video, dan berbagai dokumentasi acara tersedia di sini."</p>
+                <div class="drive-actions rv" style="--i:5">
+                    <a id="link-drive-btn" class="btn" href="#" target="_blank" rel="noopener">Buka Google Drive ↗</a>
+                    <button id="btn-copy" class="btn btn-ghost">Copy Link 🔗</button>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <!-- Lightbox foto -->
+    <div id="lightbox" hidden>
+        <button class="lb-close" aria-label="Tutup">✕</button>
+        <button class="lb-nav lb-prev" aria-label="Foto sebelumnya">‹</button>
+        <figure><img id="lb-img" alt="Foto dokumentasi"><figcaption id="lb-cap"></figcaption></figure>
+        <button class="lb-nav lb-next" aria-label="Foto berikutnya">›</button>
+    </div>
+
+    <div id="toast" role="status">Link berhasil disalin! ✨</div>
+
+    <audio id="bg-music" loop></audio>
+
+    <script src="js/config.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
