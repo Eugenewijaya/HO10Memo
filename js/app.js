@@ -169,13 +169,19 @@ async function renderDivision() {
     $('#btn-prev').setAttribute('aria-label', divIdx ? 'Sebelumnya' : 'Kembali ke pesan');
     $('#btn-next').setAttribute('aria-label', divIdx < n - 1 ? 'Berikutnya' : 'Ke penutup');
 
-    // Update Header Divisi (tetap tenang di atas tanpa ikut bergeser)
+    // Update Header Divisi & trigger animasi judul
     const emEl = $('#div-emoji'); if (emEl) emEl.textContent = d.emoji || '✨';
     const tiEl = $('#div-title'); if (tiEl) tiEl.textContent = d.name;
     const tgEl = $('#div-tag');
     if (tgEl) {
         tgEl.textContent = d.tagline || '';
         tgEl.style.display = d.tagline ? '' : 'none';
+    }
+    const head = $('.div-head');
+    if (head) {
+        head.classList.remove('title-anim');
+        void head.offsetWidth; // force reflow untuk re-trigger animasi
+        head.classList.add('title-anim');
     }
 
     const photos = await validOnly(d.photos || []);
@@ -233,8 +239,24 @@ async function renderDivision() {
             </div>
         </div>`;
     }).join('') + `<span class="pol-count">📷 ${m} foto · ketuk</span>`
-    : `<div class="pol-pos" style="left:50%;top:6%"><div class="pol" style="--enter:${enterPol}">
-            <div class="pol-in" style="--rot:-4deg;cursor:default"><div class="pol-empty"><div>${d.emoji || '📸'}<small>foto segera hadir</small></div></div></div></div></div>`;
+    : [
+        { x: 22, y: 4, rot: -7, z: 10, label: 'slot 1' },
+        { x: 50, y: 0, rot: 2, z: 25, label: 'segera hadir' },
+        { x: 78, y: 4, rot: 7, z: 12, label: 'slot 2' }
+    ].map((ph, i) => `
+        <div class="pol-pos" style="left:${ph.x}%;top:${ph.y}%;z-index:${ph.z}">
+            <div class="pol" style="--enter:${enterPol};animation-delay:${(i * 0.12).toFixed(2)}s">
+                <div class="pol-in" style="--rot:${ph.rot}deg;cursor:default">
+                    <div class="pol-empty">
+                        <div>
+                            <span>${i === 1 ? (d.emoji || '✨') : '📸'}</span>
+                            <small>${ph.label}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('') + `<span class="pol-count">📸 3 frame polaroid</span>`;
 
     // Konten yang dirender HANYA foto dan kertas pesan
     $('#division-content').innerHTML = `
@@ -260,23 +282,23 @@ function changeDivision(step) {
     busy = true;
 
     const box = $('#division-content');
-    // Animasi transisi HANYA untuk foto dan kertas pesan
-    box.style.transition = 'transform .28s cubic-bezier(.4, 0, .2, 1), opacity .24s ease';
-    box.style.transform = `translateX(${-step * 25}vw) rotate(${-step * 3}deg) scale(.96)`;
+    // Transisi halus in-place (tidak ada pergeseran horizontal yang menggeser background/viewport)
+    box.style.transition = 'transform .22s cubic-bezier(.4, 0, .2, 1), opacity .20s ease';
+    box.style.transform = `translateY(${step > 0 ? '12px' : '-12px'}) scale(.97)`;
     box.style.opacity = '0';
 
     setTimeout(() => {
         divIdx = next;
         renderDivision();
         box.style.transition = 'none';
-        box.style.transform = `translateX(${step * 25}vw) rotate(${step * 3}deg) scale(.96)`;
+        box.style.transform = `translateY(${step > 0 ? '-12px' : '12px'}) scale(.97)`;
         requestAnimationFrame(() => requestAnimationFrame(() => {
-            box.style.transition = 'transform .4s cubic-bezier(.16, 1, .3, 1), opacity .35s ease';
+            box.style.transition = 'transform .35s cubic-bezier(.16, 1, .3, 1), opacity .30s ease';
             box.style.transform = 'none';
             box.style.opacity = '1';
             busy = false;
         }));
-    }, 280);
+    }, 220);
 }
 
 /* ================= LIGHTBOX ================= */

@@ -37,7 +37,10 @@ img { display: block; max-width: 100%; }
 ::selection { background: var(--gold); color: #2a1352; }
 
 /* ---------- Lapisan background ---------- */
-.bg, #fx { position: fixed; inset: 0; pointer-events: none; }
+.bg, #fx {
+    position: fixed; inset: 0; pointer-events: none;
+    overflow: hidden; contain: strict; isolation: isolate;
+}
 #fx { width: 100%; height: 100%; z-index: 3; }
 
 #bg-space {
@@ -105,10 +108,12 @@ img { display: block; max-width: 100%; }
     min-height: 100svh;
     padding: clamp(0.7rem, 2.5vw, 1.8rem) clamp(0.65rem, 2.8vw, 1.5rem) calc(1.8rem + env(safe-area-inset-bottom));
     display: flex; flex-direction: column;
+    overflow-x: clip;
 }
 .view {
     display: none; flex-direction: column; align-items: center; width: 100%;
     margin: auto 0;
+    overflow-x: clip;
 }
 .view.active { display: flex; animation: viewIn .75s cubic-bezier(.2, .8, .2, 1) both; }
 .view.leaving { animation: viewOut .4s ease-in both; }
@@ -243,35 +248,35 @@ img { display: block; max-width: 100%; }
 
 .brand-group {
     display: inline-flex; align-items: center;
-    gap: clamp(0.4rem, 1.2vw, 0.65rem);
-    background: rgba(26, 12, 54, 0.75);
-    border: 1px solid rgba(245, 196, 81, 0.45);
-    padding: clamp(3px, 0.9vw, 5px) clamp(10px, 2.2vw, 14px);
+    gap: clamp(0.5rem, 1.4vw, 0.8rem);
+    background: rgba(26, 12, 54, 0.78);
+    border: 1px solid rgba(245, 196, 81, 0.48);
+    padding: clamp(4px, 1.1vw, 6px) clamp(12px, 2.8vw, 18px);
     border-radius: 999px;
     backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.35), 0 0 10px rgba(245, 196, 81, 0.15);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.38), 0 0 12px rgba(245, 196, 81, 0.18);
 }
 .brand-logo {
-    height: clamp(22px, 6vw, 30px);
+    height: clamp(28px, 7.8vw, 40px);
     width: auto;
-    max-width: 48px;
+    max-width: 64px;
     object-fit: contain;
     filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
     transition: transform .25s ease;
 }
 .brand-logo.logo-ho {
-    max-width: 64px;
-    transform: scale(1.18);
+    max-width: 86px;
+    transform: scale(1.22);
 }
 .brand-logo:hover { transform: scale(1.12); }
 
 .cover-epid-badge {
     display: inline-flex; align-items: center;
-    gap: clamp(0.35rem, 1vw, 0.5rem);
+    gap: clamp(0.4rem, 1.2vw, 0.55rem);
     text-decoration: none;
-    padding: 2px clamp(9px, 2vw, 13px) 2px 2px;
+    padding: 3px clamp(10px, 2.4vw, 15px) 3px 3px;
     border-radius: 999px;
-    background: rgba(26, 12, 54, 0.75);
+    background: rgba(26, 12, 54, 0.78);
     border: 1px solid rgba(245, 196, 81, 0.5);
     backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
     box-shadow: 0 3px 12px rgba(245, 196, 81, 0.25);
@@ -283,15 +288,15 @@ img { display: block; max-width: 100%; }
     box-shadow: 0 4px 18px rgba(245, 196, 81, 0.5);
 }
 .epid-gif-img {
-    width: clamp(28px, 7.5vw, 36px);
-    height: clamp(28px, 7.5vw, 36px);
+    width: clamp(34px, 9vw, 44px);
+    height: clamp(34px, 9vw, 44px);
     border-radius: 50%;
     object-fit: cover;
     border: 1.5px solid var(--gold);
     display: block;
 }
 .epid-handle {
-    font-size: clamp(0.76rem, 2vw, 0.9rem);
+    font-size: clamp(0.82rem, 2.2vw, 0.98rem);
     font-family: 'Patrick Hand', cursive;
     color: var(--gold-hi);
     font-weight: bold;
@@ -303,13 +308,13 @@ img { display: block; max-width: 100%; }
     display: flex; align-items: center; justify-content: center;
     width: -moz-fit-content; width: fit-content;
     margin: 0 auto clamp(0.35rem, 1.2vw, 0.65rem);
-    gap: clamp(0.4rem, 1.2vw, 0.65rem);
-    background: rgba(26, 12, 54, 0.75);
-    border: 1px solid rgba(245, 196, 81, 0.45);
-    padding: clamp(3px, 0.9vw, 5px) clamp(10px, 2.2vw, 14px);
+    gap: clamp(0.5rem, 1.4vw, 0.8rem);
+    background: rgba(26, 12, 54, 0.78);
+    border: 1px solid rgba(245, 196, 81, 0.48);
+    padding: clamp(4px, 1.1vw, 6px) clamp(12px, 2.8vw, 18px);
     border-radius: 999px;
     backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.35), 0 0 10px rgba(245, 196, 81, 0.15);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.38), 0 0 12px rgba(245, 196, 81, 0.18);
 }
 
 .cover-title {
@@ -348,6 +353,15 @@ img { display: block; max-width: 100%; }
 /* ---------- Halaman Divisi (Rapat & Berjarak Proporsional) ---------- */
 #division-content { width: 100%; display: flex; flex-direction: column; align-items: center; }
 .div-head { text-align: center; margin-bottom: 0.6rem; padding-top: .2rem; }
+.title-anim .div-emoji { animation: bob 4s ease-in-out infinite, titleIn .42s cubic-bezier(.2, .85, .25, 1.05) both; }
+.title-anim .div-title { animation: titleIn .48s cubic-bezier(.2, .85, .25, 1.05) both; }
+.title-anim .div-tag   { animation: titleIn .54s cubic-bezier(.2, .85, .25, 1.05) both; }
+
+@keyframes titleIn {
+    0%   { opacity: 0; transform: translateY(-10px) scale(0.95); filter: blur(3px); }
+    100% { opacity: 1; transform: translateY(0) scale(1); filter: none; }
+}
+
 .div-emoji {
     font-size: clamp(1.8rem, 1.4rem + 1.8vw, 2.6rem);
     filter: drop-shadow(0 4px 12px rgba(0, 0, 0, .4));
