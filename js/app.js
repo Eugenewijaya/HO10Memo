@@ -699,31 +699,15 @@ const storyModal = (() => {
 
         g.restore();
 
-        // 10. Footer Card (y: 1720 - 1880)
+        // 10. Footer (y: 1720 - 1880)
         g.textAlign = 'center';
-        g.font = '700 25px "Playfair Display", serif';
+        g.font = '700 26px "Playfair Display", serif';
         g.fillStyle = 'rgba(245, 196, 81, 0.95)';
-        g.fillText('✦ Hangout Buddhist Worship ✦', 540, 1750);
+        g.fillText('✦ Hangout Buddhist Worship ✦', 540, 1782);
 
-        g.font = 'italic 28px "Playfair Display", serif';
+        g.font = 'italic 30px "Playfair Display", serif';
         g.fillStyle = '#fff2cb';
-        g.fillText('"A Journey Together"', 540, 1790);
-
-        // Badge pill footer
-        const fbW = 440, fbH = 52, fbX = (W - fbW) / 2, fbY = 1824;
-        g.save();
-        g.beginPath();
-        g.roundRect(fbX, fbY, fbW, fbH, fbH / 2);
-        g.fillStyle = 'rgba(28, 12, 60, 0.92)';
-        g.fill();
-        g.lineWidth = 1.4;
-        g.strokeStyle = 'rgba(245, 196, 81, 0.55)';
-        g.stroke();
-        g.restore();
-
-        g.font = 'bold 24px "Patrick Hand", cursive';
-        g.fillStyle = '#ffeaa7';
-        g.fillText('Dokumentasi oleh @epidoey 📸', 540, fbY + 35);
+        g.fillText('"A Journey Together"', 540, 1828);
 
         return new Promise(resolve => {
             cv.toBlob(blob => {
@@ -883,7 +867,7 @@ const audio = (() => {
 /* ================= INIT ================= */
 document.addEventListener('DOMContentLoaded', async () => {
     const e = CONFIG.epid;
-    $('#epid-name').textContent = e.name; $('#sign-name').textContent = e.name; $('#epid-role').textContent = e.role;
+    $('#sign-name').textContent = e.name; // teks cover (untuk Semua Tim) diatur langsung di index.html
     const av = $('.avatar'); if (av) av.dataset.initial = (e.name || '?')[0];
     const ph = $('#epid-photo'); if (ph) { ph.onerror = () => ph.remove(); ph.src = e.photo; }
     $('#link-drive-btn').href = CONFIG.driveLink;
