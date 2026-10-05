@@ -75,8 +75,11 @@ img { display: block; max-width: 100%; }
         linear-gradient(180deg, rgba(58, 20, 120, .50), rgba(95, 38, 150, .28) 45%, rgba(24, 8, 56, .82));
 }
 
+#bg-slides { display: none; }
+
 #bg-rays {
-    z-index: 2; overflow: hidden; transition: opacity 1.4s ease;
+    z-index: 2; overflow: hidden;
+    opacity: .65;
     mix-blend-mode: screen;
 }
 #bg-rays::before, #bg-rays::after {
@@ -94,9 +97,6 @@ img { display: block; max-width: 100%; }
     background: repeating-conic-gradient(rgba(255, 240, 190, .16) 0 2deg, transparent 2deg 9deg);
     animation: spin 70s linear infinite reverse;
 }
-
-body.mode-photos #bg-slides, body.mode-photos #bg-tint { opacity: 1; }
-body.mode-photos #bg-rays { opacity: .45; }
 
 /* ---------- Layout & Container Responsif ---------- */
 #stage {

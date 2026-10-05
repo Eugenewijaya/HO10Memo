@@ -69,24 +69,22 @@ const fx = (() => {
 
     function frame(ts) {
         const dt = Math.min((ts - last) / 1000 || 0, .05); last = ts;
-        blend += (target - blend) * Math.min(dt * 2.5, 1);
+        blend = 1; // bintang dan partikel stabil bersinar di background
 
-        // pemancar
-        if (!reduceMotion && parts.length < 170) {
+        // pemancar partikel emas konstan & halus
+        if (!reduceMotion && parts.length < 150) {
             const k = isSmall() ? .7 : 1;
-            acc += dt * (mode === 'space' ? 22 : 12) * k; while (acc >= 1) { radial(); acc--; }
-            if (mode === 'photos' && Math.random() < dt * 6) dust();
+            acc += dt * 16 * k; while (acc >= 1) { radial(); acc--; }
+            if (Math.random() < dt * 5) dust();
         }
 
         g.clearRect(0, 0, W, H);
         g.globalCompositeOperation = 'lighter';
 
-        if (blend > .02) {
-            const t = ts / 1000;
-            for (const s of stars) {
-                g.globalAlpha = (.2 + .8 * (.5 + .5 * Math.sin(t * s.sp + s.p))) * blend;
-                g.drawImage(s.spr, s.x - s.s / 2, s.y - s.s / 2, s.s, s.s);
-            }
+        const t = ts / 1000;
+        for (const s of stars) {
+            g.globalAlpha = .25 + .75 * (.5 + .5 * Math.sin(t * s.sp + s.p));
+            g.drawImage(s.spr, s.x - s.s / 2, s.y - s.s / 2, s.s, s.s);
         }
 
         for (let i = parts.length - 1; i >= 0; i--) {
@@ -109,10 +107,13 @@ const fx = (() => {
 
     addEventListener('resize', resize);
     resize(); requestAnimationFrame(frame);
-    // percikan kecil setiap ketukan
-    document.addEventListener('pointerdown', e => burst(e.clientX, e.clientY, e.target.closest('button,a') ? 16 : 7));
 
-    return { setMode(m) { mode = m; target = m === 'space' ? 1 : 0; }, burst };
+    // percikan kecil hanya ketika mengetuk foto polaroid
+    document.addEventListener('pointerdown', e => {
+        if (e.target.closest('.pol-in')) burst(e.clientX, e.clientY, 10);
+    });
+
+    return { setMode() {}, burst };
 })();
 
 /* ================= LOADER FOTO LOKAL ================= */
@@ -137,26 +138,8 @@ const validOnly = async list => {
     return checked.filter(Boolean);
 };
 
-/* ================= SLIDESHOW BACKGROUND (zoom-out + fade) ================= */
-const slides = (() => {
-    const box = $('#bg-slides'); let timer = 0, list = [], i = 0;
-    function show() {
-        if (!list.length) return;
-        const el = document.createElement('div');
-        el.className = 'slide'; el.style.backgroundImage = `url("${list[i++ % list.length]}")`;
-        box.appendChild(el);
-        const old = [...box.children].slice(0, -1);
-        setTimeout(() => old.forEach(o => o.remove()), 1600);
-    }
-    return {
-        play(photos) {
-            clearInterval(timer); list = photos; i = Math.floor(Math.random() * Math.max(photos.length, 1));
-            if (!list.length) return [...box.children].forEach(o => o.remove());
-            show(); if (list.length > 1) timer = setInterval(show, 5500);
-        },
-        stop() { clearInterval(timer); }
-    };
-})();
+/* ================= SLIDESHOW BACKGROUND (DILEWATI: BACKGROUND TETAP STABIL) ================= */
+const slides = { play() {}, stop() {} };
 
 /* ================= NAVIGASI ================= */
 const DIVS = CONFIG.divisions;
@@ -170,10 +153,6 @@ function goTo(id, after) {
     setTimeout(() => {
         from.classList.remove('active', 'leaving');
         current = id;
-        const toDiv = id === 'view-division';
-        document.body.className = toDiv ? 'mode-photos' : 'mode-space';
-        fx.setMode(toDiv ? 'photos' : 'space');
-        if (!toDiv) slides.stop();
         $('#' + id).classList.add('active');
         scrollTo({ top: 0 });
         after && after();
@@ -190,9 +169,17 @@ async function renderDivision() {
     $('#btn-prev').setAttribute('aria-label', divIdx ? 'Sebelumnya' : 'Kembali ke pesan');
     $('#btn-next').setAttribute('aria-label', divIdx < n - 1 ? 'Berikutnya' : 'Ke penutup');
 
+    // Update Header Divisi (tetap tenang di atas tanpa ikut bergeser)
+    const emEl = $('#div-emoji'); if (emEl) emEl.textContent = d.emoji || '✨';
+    const tiEl = $('#div-title'); if (tiEl) tiEl.textContent = d.name;
+    const tgEl = $('#div-tag');
+    if (tgEl) {
+        tgEl.textContent = d.tagline || '';
+        tgEl.style.display = d.tagline ? '' : 'none';
+    }
+
     const photos = await validOnly(d.photos || []);
     if (token !== renderToken) return;           // user sudah pindah divisi
-    slides.play(photos);
 
     const animList = [
         'enterDrop', 'enterFlip', 'enterSwing', 'enterSettle', 'enterSnap',
@@ -249,16 +236,8 @@ async function renderDivision() {
     : `<div class="pol-pos" style="left:50%;top:6%"><div class="pol" style="--enter:${enterPol}">
             <div class="pol-in" style="--rot:-4deg;cursor:default"><div class="pol-empty"><div>${d.emoji || '📸'}<small>foto segera hadir</small></div></div></div></div></div>`;
 
+    // Konten yang dirender HANYA foto dan kertas pesan
     $('#division-content').innerHTML = `
-        <header class="div-head rv" style="--i:0">
-            <div class="div-brand-center" title="BW x Hangout">
-                <img src="images/header-img/BW LOGO ORIGINAL.png" alt="BW Logo" class="brand-logo logo-bw">
-                <img src="images/header-img/HANGOUT LOGO.png" alt="Hangout Logo" class="brand-logo logo-ho">
-            </div>
-            <span class="div-emoji">${d.emoji || '✨'}</span>
-            <h2 class="div-title gold-text">${d.name}</h2>
-            ${d.tagline ? `<p class="div-tag">${d.tagline}</p>` : ''}
-        </header>
         <div class="pol-stage">${pols}</div>
         <article class="paper div-paper" style="--enter:${enterPaper};--tilt:${rand(-.8, .8).toFixed(2)}deg">
             <div class="tape" style="left:50%;top:-14px;transform:translateX(-50%) rotate(${rand(-3, 3).toFixed(1)}deg)"></div>
@@ -277,20 +256,27 @@ function changeDivision(step) {
     const next = divIdx + step;
     if (next < 0) return goTo('view-message');
     if (next >= DIVS.length) return goTo('view-closing');
+    if (busy) return;
+    busy = true;
+
     const box = $('#division-content');
-    box.style.transition = 'transform .4s cubic-bezier(.7,-.2,.3,1.2), opacity .3s';
-    box.style.transform = `translateX(${-step * 40}vw) rotate(${-step * 12}deg) scale(.9)`; box.style.opacity = 0;
+    // Animasi transisi HANYA untuk foto dan kertas pesan
+    box.style.transition = 'transform .28s cubic-bezier(.4, 0, .2, 1), opacity .24s ease';
+    box.style.transform = `translateX(${-step * 25}vw) rotate(${-step * 3}deg) scale(.96)`;
+    box.style.opacity = '0';
+
     setTimeout(() => {
         divIdx = next;
         renderDivision();
         box.style.transition = 'none';
-        box.style.transform = `translateX(${step * 40}vw) rotate(${step * 12}deg) scale(.9)`;
+        box.style.transform = `translateX(${step * 25}vw) rotate(${step * 3}deg) scale(.96)`;
         requestAnimationFrame(() => requestAnimationFrame(() => {
-            box.style.transition = 'transform .6s cubic-bezier(.2,.8,.2,1.1), opacity .5s';
-            box.style.transform = 'none'; box.style.opacity = 1;
+            box.style.transition = 'transform .4s cubic-bezier(.16, 1, .3, 1), opacity .35s ease';
+            box.style.transform = 'none';
+            box.style.opacity = '1';
+            busy = false;
         }));
-        scrollTo({ top: 0, behavior: 'smooth' });
-    }, 400);
+    }, 280);
 }
 
 /* ================= LIGHTBOX ================= */
