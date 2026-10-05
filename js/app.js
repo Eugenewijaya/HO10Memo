@@ -234,7 +234,7 @@ async function renderDivision() {
         return `<div class="pol-pos" style="left:${x}%;top:${y}%;z-index:${zIndex}">
             <div class="pol" style="--enter:${enterPol};animation-delay:${(i * 0.12).toFixed(2)}s">
                 <button class="pol-in" data-i="${i}" style="--rot:${rot}deg;--float-delay:${floatDelay}s;--rot-drift:${rotDrift}deg" aria-label="Lihat foto ${i + 1}">
-                    <img src="${src}" alt="${d.name} ${i + 1}" loading="eager" decoding="async" onload="if(this.naturalWidth&&this.naturalHeight)this.style.setProperty('--ar',this.naturalWidth+'/'+this.naturalHeight)">
+                    <img src="${src}" alt="${d.name} ${i + 1}" loading="eager" decoding="async">
                 </button>
             </div>
         </div>`;
@@ -509,7 +509,7 @@ const storyModal = (() => {
         g.fillStyle = goldGrad;
         g.shadowColor = 'rgba(245, 196, 81, 0.4)';
         g.shadowBlur = 18;
-        g.fillText('A Glimpse of Our Journey Together', 540, 268);
+        g.fillText('A Journey Together', 540, 268);
         g.shadowBlur = 0;
 
         // 7. Divisi Badge & Judul
@@ -767,7 +767,7 @@ const storyModal = (() => {
         try {
             const file = new File([currentBlob], `HO10-${currentDivisionName}-Story.png`, { type: 'image/png' });
             await navigator.share({
-                title: `A Golden Appreciation Letter - ${currentDivisionName}`,
+                title: `A Journey Together - ${currentDivisionName}`,
                 text: `Pesan apresiasi untuk ${currentDivisionName} di HO10 ✨`,
                 files: [file]
             });

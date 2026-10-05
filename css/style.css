@@ -1,5 +1,5 @@
 /* ============================================================
-   A Golden Appreciation Letter — Truly Mobile-First Responsive
+   A Journey Together — Truly Mobile-First Responsive
    Palet: ungu tua (#1b0a3d) · emas (#f5c451) · kertas plum gelap
    ============================================================ */
 :root {
@@ -404,13 +404,11 @@ img { display: block; max-width: 100%; }
     outline: none;
 }
 .pol-in img {
-    width: 100%; height: auto;
-    aspect-ratio: var(--ar, 1 / 1);
-    max-height: clamp(125px, 35vw, 185px);
+    width: 100%;
+    aspect-ratio: 1;
     object-fit: cover;
     display: block; border-radius: 2px;
     background: rgba(20, 8, 40, 0.4);
-    transition: aspect-ratio .3s ease;
 }
 .pol-empty {
     display: grid; place-items: center; aspect-ratio: 1; font-size: clamp(2.2rem, 7vw, 3rem); text-align: center;
