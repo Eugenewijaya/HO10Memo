@@ -216,7 +216,7 @@ body.mode-photos #bg-rays { opacity: .45; }
 /* ---------- Cover Depan ---------- */
 .cover {
     position: relative; width: 100%; text-align: center;
-    padding: clamp(1.8rem, 5vw, 3rem) clamp(1rem, 3.8vw, 2.4rem);
+    padding: clamp(1.4rem, 4.5vw, 2.8rem) clamp(0.9rem, 3.5vw, 2.2rem);
     border-radius: 18px;
     display: flex; flex-direction: column; align-items: center;
     background: linear-gradient(160deg, rgba(58, 35, 103, .90), rgba(30, 14, 64, .94));
@@ -233,24 +233,88 @@ body.mode-photos #bg-rays { opacity: .45; }
 .corner.tl { top: 12px; left: 14px; } .corner.tr { top: 12px; right: 14px; animation-delay: .6s; }
 .corner.bl { bottom: 12px; left: 14px; animation-delay: 1.2s; } .corner.br { bottom: 12px; right: 14px; animation-delay: 1.8s; }
 
+/* Top Bar di Cover: Kiri Logo BW + HO, Kanan Evid GIF IG */
+.cover-top-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    width: 100%;
+    margin-bottom: clamp(0.6rem, 2vw, 1.1rem);
+    position: relative; z-index: 10;
+}
+
+.brand-group {
+    display: inline-flex; align-items: center;
+    gap: clamp(0.4rem, 1.2vw, 0.65rem);
+    background: rgba(26, 12, 54, 0.75);
+    border: 1px solid rgba(245, 196, 81, 0.45);
+    padding: clamp(3px, 0.9vw, 5px) clamp(10px, 2.2vw, 14px);
+    border-radius: 999px;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.35), 0 0 10px rgba(245, 196, 81, 0.15);
+}
+.brand-logo {
+    height: clamp(22px, 6vw, 30px);
+    width: auto;
+    max-width: 48px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
+    transition: transform .25s ease;
+}
+.brand-logo.logo-ho {
+    max-width: 64px;
+    transform: scale(1.18);
+}
+.brand-logo:hover { transform: scale(1.12); }
+
+.cover-epid-badge {
+    display: inline-flex; align-items: center;
+    gap: clamp(0.35rem, 1vw, 0.5rem);
+    text-decoration: none;
+    padding: 2px clamp(9px, 2vw, 13px) 2px 2px;
+    border-radius: 999px;
+    background: rgba(26, 12, 54, 0.75);
+    border: 1px solid rgba(245, 196, 81, 0.5);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 3px 12px rgba(245, 196, 81, 0.25);
+    transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+}
+.cover-epid-badge:hover {
+    transform: translateY(-2px) scale(1.03);
+    background: rgba(45, 20, 90, 0.85);
+    box-shadow: 0 4px 18px rgba(245, 196, 81, 0.5);
+}
+.epid-gif-img {
+    width: clamp(28px, 7.5vw, 36px);
+    height: clamp(28px, 7.5vw, 36px);
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid var(--gold);
+    display: block;
+}
+.epid-handle {
+    font-size: clamp(0.76rem, 2vw, 0.9rem);
+    font-family: 'Patrick Hand', cursive;
+    color: var(--gold-hi);
+    font-weight: bold;
+    letter-spacing: 0.02em;
+}
+
+/* Logo Tengah pada Halaman Divisi */
+.div-brand-center {
+    display: flex; align-items: center; justify-content: center;
+    width: -moz-fit-content; width: fit-content;
+    margin: 0 auto clamp(0.35rem, 1.2vw, 0.65rem);
+    gap: clamp(0.4rem, 1.2vw, 0.65rem);
+    background: rgba(26, 12, 54, 0.75);
+    border: 1px solid rgba(245, 196, 81, 0.45);
+    padding: clamp(3px, 0.9vw, 5px) clamp(10px, 2.2vw, 14px);
+    border-radius: 999px;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.35), 0 0 10px rgba(245, 196, 81, 0.15);
+}
+
 .cover-title {
     font-size: clamp(1.85rem, 1.25rem + 3.4vw, 3.3rem);
     margin: .6rem 0 1.2rem;
-}
-.avatar {
-    --s: clamp(86px, 24vw, 120px);
-    width: var(--s); height: var(--s); border-radius: 50%;
-    padding: 3.5px;
-    background: conic-gradient(var(--gold-hi), var(--gold-lo), var(--gold-hi), var(--gold), var(--gold-hi));
-    box-shadow: 0 0 30px rgba(245, 196, 81, .55);
-    animation: pulse 3s ease-in-out infinite;
-    display: grid; place-items: center; position: relative;
-}
-.avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: var(--paper-a); }
-.avatar::after {
-    content: attr(data-initial); position: absolute; inset: 3.5px; border-radius: 50%; z-index: -1;
-    display: grid; place-items: center; font: 800 clamp(2rem, 6vw, 2.8rem) 'Playfair Display', serif; color: #2a1352;
-    background: linear-gradient(135deg, var(--gold-hi), var(--gold));
 }
 .cover-from {
     margin-top: .75rem;

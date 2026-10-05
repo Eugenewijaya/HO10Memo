@@ -230,6 +230,10 @@ async function renderDivision() {
 
     $('#division-content').innerHTML = `
         <header class="div-head rv" style="--i:0">
+            <div class="div-brand-center" title="BW x Hangout">
+                <img src="images/header-img/BW LOGO ORIGINAL.png" alt="BW Logo" class="brand-logo logo-bw">
+                <img src="images/header-img/HANGOUT LOGO.png" alt="Hangout Logo" class="brand-logo logo-ho">
+            </div>
             <span class="div-emoji">${d.emoji || '✨'}</span>
             <h2 class="div-title gold-text">${d.name}</h2>
             ${d.tagline ? `<p class="div-tag">${d.tagline}</p>` : ''}
@@ -322,8 +326,8 @@ const audio = (() => {
 document.addEventListener('DOMContentLoaded', async () => {
     const e = CONFIG.epid;
     $('#epid-name').textContent = e.name; $('#sign-name').textContent = e.name; $('#epid-role').textContent = e.role;
-    const av = $('.avatar'); av.dataset.initial = (e.name || '?')[0];
-    const ph = $('#epid-photo'); ph.onerror = () => ph.remove(); ph.src = e.photo;
+    const av = $('.avatar'); if (av) av.dataset.initial = (e.name || '?')[0];
+    const ph = $('#epid-photo'); if (ph) { ph.onerror = () => ph.remove(); ph.src = e.photo; }
     $('#link-drive-btn').href = CONFIG.driveLink;
 
     $('#intro-text').innerHTML = para(CONFIG.intro, 1);
