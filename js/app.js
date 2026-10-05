@@ -124,8 +124,17 @@ const canLoad = src => {
     return imgCache.get(src);
 };
 const validOnly = async list => {
-    const ok = await Promise.all(list.map(canLoad));
-    return list.filter((_, i) => ok[i]);
+    const checked = await Promise.all(list.map(async src => {
+        if (await canLoad(src)) return src;
+        if (src.endsWith('.webp')) {
+            const jpg = src.replace(/\.webp$/, '.jpg');
+            if (await canLoad(jpg)) return jpg;
+            const png = src.replace(/\.webp$/, '.png');
+            if (await canLoad(png)) return png;
+        }
+        return null;
+    }));
+    return checked.filter(Boolean);
 };
 
 /* ================= SLIDESHOW BACKGROUND (zoom-out + fade) ================= */
@@ -205,15 +214,27 @@ async function renderDivision() {
             x = i === 0 ? 22 : (i === 1 ? 50 : 78);
             y = i === 1 ? 0 : 4;
             rot = i === 0 ? -7 : (i === 1 ? 2 : 7);
-        } else {
-            // 4 Foto (atau lebih): cluster scrapbook bertumpuk rapi
-            const step = 66 / (m - 1);
+        } else if (m === 4) {
+            // 4 Foto: cluster scrapbook bertumpuk rapi
+            const step = 66 / 3;
             x = 17 + (i * step);
             y = (i === 1 || i === 2) ? (i === 1 ? 0 : 2) : 5;
             rot = i === 0 ? -8 : (i === 1 ? 3 : (i === 2 ? -4 : 7));
+        } else {
+            // 5 Foto: lengkungan scrapbook 5 foto seimbang
+            const step = 68 / (m - 1);
+            x = 16 + (i * step);
+            const yMap = [5, 2, 0, 2, 5];
+            const rotMap = [-9, -4, 1, 5, 8];
+            y = yMap[i] ?? 3;
+            rot = rotMap[i] ?? (i % 2 === 0 ? -5 : 5);
         }
 
-        const zIndex = (m === 3 && i === 1) ? 25 : (m >= 4 && (i === 1 || i === 2) ? 22 + i : 10 + i);
+        let zIndex = 10 + i;
+        if (m === 3 && i === 1) zIndex = 25;
+        else if (m === 4 && (i === 1 || i === 2)) zIndex = 22 + i;
+        else if (m >= 5 && i === 2) zIndex = 28;
+        else if (m >= 5 && (i === 1 || i === 3)) zIndex = 24;
         const floatDelay = (i * 0.45).toFixed(2);
         const rotDrift = (i % 2 === 0 ? 1.5 : -1.5);
 
@@ -313,13 +334,75 @@ function copyDrive() {
     ta.remove();
 }
 
+/* ================= AUDIO (AUTOPLAY LOOP TANPA TOMBOL NAVIGASI) ================= */
 const audio = (() => {
-    const a = $('#bg-music'), b = $('#btn-audio'); let on = false;
-    if (!CONFIG.audioUrl) return { start() {} };
-    a.src = CONFIG.audioUrl; b.hidden = false;
-    const set = v => { on = v; v ? a.play().catch(() => (on = false)) : a.pause(); b.classList.toggle('on', on); b.textContent = on ? '♫' : '♪'; };
-    b.onclick = () => set(!on);
-    return { start() { if (!on) set(true); } };
+    const a = $('#bg-music');
+    if (!a) return { start() {} };
+    a.loop = true;
+
+    let isPlaying = false;
+    let chosenSrc = null;
+
+    async function pickAudioSource() {
+        const candidates = [
+            CONFIG.audioUrl,
+            'audio/bgaudio.ogg',
+            'audio/bgaudio.mp3',
+            'audio/bgm.ogg',
+            'audio/bgm.mp3',
+            'audio/lagu.mp3',
+            'audio/music.mp3',
+            'audio/song.mp3',
+            'audio/backsound.mp3',
+            'audio/audio.mp3',
+            'audio/bgm.m4a',
+            'audio/bgm.wav',
+            'audio/bgm.aac',
+            'audio/bgm.ogg'
+        ].filter(Boolean);
+
+        const unique = [...new Set(candidates)];
+        for (const url of unique) {
+            try {
+                const res = await fetch(url, { method: 'HEAD' });
+                if (res.ok) { chosenSrc = url; break; }
+            } catch (e) {}
+        }
+        if (!chosenSrc && unique.length) chosenSrc = unique[0];
+        if (chosenSrc) {
+            a.src = chosenSrc;
+            a.load();
+        }
+    }
+
+    const playSafe = () => {
+        if (!a.src && chosenSrc) a.src = chosenSrc;
+        if (!a.src || isPlaying) return;
+        a.play().then(() => {
+            isPlaying = true;
+            ['pointerdown', 'touchstart', 'click', 'keydown'].forEach(ev => {
+                document.removeEventListener(ev, playSafe);
+            });
+        }).catch(() => {
+            // Autoplay ditahan sementara oleh browser hingga gestur sentuhan pertama
+        });
+    };
+
+    // Jalankan deteksi sumber dan coba autoplay dari awal
+    pickAudioSource().then(() => {
+        playSafe();
+    });
+
+    // Menjamin musik otomatis menyala pada sentuhan/klik pertama di mana saja di layar
+    ['pointerdown', 'touchstart', 'click', 'keydown'].forEach(ev => {
+        document.addEventListener(ev, playSafe, { passive: true });
+    });
+
+    return {
+        start() {
+            playSafe();
+        }
+    };
 })();
 
 /* ================= INIT ================= */
@@ -335,7 +418,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     (CONFIG.coverPhotos || []).forEach(async (src, i) => {
         const box = $(`.cover-pol-${i + 1}`);
-        if (box && await canLoad(src)) { box.querySelector('img').src = src; box.hidden = false; }
+        if (!box) return;
+        let finalSrc = null;
+        if (await canLoad(src)) finalSrc = src;
+        else if (await canLoad(src.replace(/\.webp$/, '.jpg'))) finalSrc = src.replace(/\.webp$/, '.jpg');
+        else if (await canLoad(src.replace(/\.webp$/, '.png'))) finalSrc = src.replace(/\.webp$/, '.png');
+        if (finalSrc) { box.querySelector('img').src = finalSrc; box.hidden = false; }
     });
 
     $('#btn-open').onclick = () => { audio.start(); goTo('view-message'); };

@@ -461,13 +461,7 @@ body.mode-photos #bg-rays { opacity: .45; }
 }
 .drive-actions { display: flex; flex-direction: column; gap: .75rem; align-items: stretch; }
 
-/* ---------- Audio, Toast, Lightbox ---------- */
-.audio-btn {
-    position: fixed; top: calc(.7rem + env(safe-area-inset-top)); right: .7rem; z-index: 60;
-    width: 42px; height: 42px; border-radius: 50%; font-size: 1.25rem; color: var(--gold-hi);
-    background: rgba(27, 10, 61, .7); backdrop-filter: blur(10px); border: 1px solid rgba(245, 196, 81, .5);
-}
-.audio-btn.on { animation: pulse 1.6s ease-in-out infinite; color: var(--gold); }
+/* ---------- Toast & Lightbox ---------- */
 
 #toast {
     position: fixed; left: 50%; bottom: 2rem; z-index: 90; translate: -50% 40px; opacity: 0; pointer-events: none;
