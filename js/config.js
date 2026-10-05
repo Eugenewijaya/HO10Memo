@@ -17,7 +17,7 @@ const pics = (slug, n = 5, ext = 'webp') =>
     Array.from({ length: n }, (_, i) => `images/${slug}/${i + 1}.${ext}`);
 
 const CONFIG = {
-    driveLink: "https://drive.google.com/drive/folders/CONTOH_LINK_PLACEHOLDER",
+    driveLink: "https://drive.google.com/drive/folders/1y-hR4WboimVdemNvkV1tGkoFsX_KmtJ2?usp=sharing",
 
     // File musik lokal di folder audio
     audioUrl: "audio/bgaudio.ogg",
