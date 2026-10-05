@@ -130,6 +130,30 @@
         <button class="lb-nav lb-next" aria-label="Foto berikutnya">›</button>
     </div>
 
+    <!-- Modal Preview & Unduh Share Story (9:16) -->
+    <div id="share-modal" class="share-modal" hidden>
+        <div class="share-modal-backdrop"></div>
+        <div class="share-modal-card">
+            <button class="share-modal-close" aria-label="Tutup modal">✕</button>
+            <div class="share-modal-header">
+                <span class="share-modal-badge">✨ STORY CARD 9:16</span>
+                <h3 class="share-modal-title gold-text">Story Siap Dibagikan!</h3>
+                <p class="share-modal-desc">Template eksklusif 9:16 untuk Instagram Story atau WhatsApp Status.</p>
+            </div>
+            <div class="share-preview-wrap">
+                <div class="share-preview-loading" id="share-loading">
+                    <span class="spinner"></span>
+                    <p>Merender Story Card 9:16...</p>
+                </div>
+                <img id="share-preview-img" alt="Story Card 9:16" hidden>
+            </div>
+            <div class="share-modal-actions">
+                <button id="btn-download-story" class="btn pulse">Unduh Foto (9:16) 📥</button>
+                <button id="btn-native-share" class="btn btn-ghost" hidden>Bagikan ke Sosmed 📲</button>
+            </div>
+        </div>
+    </div>
+
     <div id="toast" role="status">Link berhasil disalin! ✨</div>
 
     <audio id="bg-music" loop></audio>

@@ -33,22 +33,22 @@ const CONFIG = {
 
     // Pesan pembuka (setiap item = satu paragraf, boleh <b>…</b> dan \n)
     intro: [
-        "Terima kasih sudah menjadi bagian dari perjalanan acara ini.",
-        "Mungkin selama acara kita sibuk dengan tugas masing-masing, mengejar waktu, memastikan semuanya berjalan, dan kadang bahkan lupa menikmati momennya.",
-        "Tapi dari balik kamera, aku melihat banyak hal kecil yang menurutku layak untuk diingat.",
-        "Senyum. Kepanikan kecil. Ketawa. Capek. Kerja sama.",
-        "Dan semua momen random yang akhirnya justru jadi cerita.",
-        "Jadi sebelum dokumentasinya aku bagikan...\naku mau menyampaikan sedikit pesan untuk kalian."
+        "Makasih yaa udah jadi bagian dari acara ini.",
+        "Mungkin selama persiapan acara sampe hari H kita sibuk dengan tugas masing-masing, ngejar waktu, meeting terus buat mastiin semuanya berjalan.",
+        "Tapi apa kamu tau?, Dokum melihat segalanya mulai dari hal yang kamu notice, ngga notice atau sempet notice ga yaaa.",
+        "Kayak pas lagi serius. Lagi panik dikit. Ketawa. Becanda. dan juga Capek.",
+        "Semua momen random yang akhirnya justru jadi cerita di event kita kali ini.",
+        "Jadi sebelum link dokumentasinya aku bagiin...\naku mau menyampaikan sedikit pesan untuk kalian."
     ],
 
     // Pesan penutup
     closing: [
-        "Setelah semua cerita, kerja keras, ketawa, capek, dan momen-momen random yang kita lewati bareng...",
+        "Setelah semua cerita, kerja keras, ketawa, capek, dan momen-momen kocak yang kita lewati bareng bareng...",
         "akhirnya sampai juga di bagian terakhir.",
-        "Terima kasih sudah memberikan waktu, tenaga, ide, dan energi kalian selama acara ini.",
+        "Makasih bangettt udah mau ngebagi waktu, tenaga, ide, dan energi kalian selama acara ini.",
         "<b>Mungkin nggak semua momen sempat kita sadari.</b>",
-        "Tapi untungnya... ada dokumentasi yang menyimpannya.",
-        "<b>Dan sekarang, saatnya aku berbagi semuanya.</b>"
+        "Tapi untungnya... ada aku dan tim dokumentasi yang udah nyimpen baik baik recapnya.",
+        "<b>Dan sekarang, saatnya aku bagiin ke kalian semua.</b>"
     ],
 
     /*
@@ -60,70 +60,70 @@ const CONFIG = {
         {
             slug: "tasya-patrick", name: "Tasya & Patrick", emoji: "🌟",
             tagline: "Dua bintang di balik cerita",
-            message: ["[Edit: pesan untuk Tasya & Patrick]", "Terima kasih sudah menghidupkan karakter dan membuat semua orang tersenyum."],
-            closing: "Kalian bikin ceritanya hidup. ✨",
+            message: ["Allooo aku mau ngucapin makasih ya udah direct acaranya sampe finish, tentu saja anda kan yang pusing, ngurusin ini itu dari nol dan sabar ngadepin kita semua, udah emang paling gokill dahhh"],
+            closing: "Hidup memang mudah, mudah mudahan survive. ✨",
             photos: pics("tasya-patrick", 5)
         },
         {
             slug: "musik-vocal", name: "Musik Vocal", emoji: "🎤",
-            tagline: "Suara yang bikin merinding",
-            message: ["[Edit: pesan untuk Musik Vocal]", "Setiap nada dan harmoni dari kalian bikin suasana jadi hangat."],
-            closing: "Suara kalian terekam di hati. 🎶",
+            tagline: "Bilangin sama matahari ini yang paling terang",
+            message: ["Aku tau di balik kerennya penampilan kalian di panggung pasti banyak banget latihannya, ga cuma di studio aja kann siapa tau di kamar mandi atau di depan kaca, terus belum lagi rasa deg-degan pas mau naik panggung tapi kalian berhasil negbuktiin kalo semuanya worth it bangett wkwkwk"],
+            closing: " Gue apresiasi kalian segede gedenyaaa",
             photos: pics("musik-vocal", 5)
         },
         {
             slug: "dance", name: "Dance", emoji: "💃",
-            tagline: "Setiap gerakan adalah cerita",
-            message: ["[Edit: pesan untuk Dance]", "Latihan berjam-jam terbayar di atas panggung. Energi kalian luar biasa!"],
-            closing: "Kalian menari, kami terpukau. 🔥",
+            tagline: "Ini sih yang bikin makin seru",
+            message: ["Sebelumnya maaf yaa, aku pas latihan ngga sempet dateng ke studio dance hehe, tapi pas hari H aslii keren banget coyy"],
+            closing: "Proud bangett WKKWKWK. 🔥",
             photos: pics("dance", 5)
         },
         {
             slug: "event", name: "Event", emoji: "🎪",
-            tagline: "Dalang di balik rundown",
-            message: ["[Edit: pesan untuk Event]", "Rundown yang rapi dan semua yang jalan mulus itu hasil kerja keras kalian."],
-            closing: "Semua berjalan karena kalian. 🤍",
+            tagline: "Ini nih yang kabur semua pas di rekam",
+            message: ["Gaiss Thankyou yaa, udah ngerangkai acaranya sampai berjalan bener bener tuntas, ngeliat kalian yang repot banget ngurusin banyak hal yang complicated itu bikin salut banget sihh asli sumpah ini aja ngetik ga pake AI"],
+            closing: "Maju lo semua gue beliin teazzi.",
             photos: pics("event", 5)
         },
         {
             slug: "mulmed", name: "Mulmed", emoji: "🎬",
-            tagline: "Visual & audio yang bikin acara hidup",
-            message: ["[Edit: pesan untuk Mulmed]", "Layar, suara, dan visual dari kalian bikin acara terasa seperti film."],
-            closing: "Kalian bikin momennya terlihat megah. 🎞️",
+            tagline: "Masih kerabat lah sama dokum yak",
+            message: ["Makasih udah bantu manage visual sebaik baiknya, ayam jago aja minder liat anak mulmed"],
+            closing: "Kelasss Kinggg",
             photos: pics("mulmed", 5)
         },
         {
             slug: "marketing-usher", name: "Marketing & Usher", emoji: "📣",
             tagline: "Wajah pertama yang menyambut semua orang",
-            message: ["[Edit: pesan untuk Marketing & Usher]", "Dari promosi sampai sambutan di pintu masuk, kalian jadi kesan pertama yang hangat."],
-            closing: "Senyum pertama selalu dari kalian. 😊",
+            message: ["Dari promosi sampai sambutan di pintu masuk, paling gokil sihh apalagi bisa dapetin peserta lebih dari 230+ orang, tolong dong konsumsi mereka x2 di next event Wkwkwkwk"],
+            closing: "Semoga lelahmu menjadi civic turbo",
             photos: pics("marketing-usher", 5)
         },
         {
             slug: "perlengkapan", name: "Perlengkapan", emoji: "🛠️",
-            tagline: "Yang memastikan semuanya ada",
-            message: ["[Edit: pesan untuk Perlengkapan]", "Angkat, pasang, bongkar, cari barang yang hilang — kalian selalu sigap."],
-            closing: "Kalian yang menopang semuanya. 💪",
+            tagline: "Semuanya ada kalo dia ada",
+            message: ["Angkat, pasang, bongkar, cari barang yang hilang sampe nyediain konsumsi buat tim, itu capeknya kalo di convert jadi saldo gopay bisa kebeli nasi kuning."],
+            closing: "The Real Act of Service gasihhh",
             photos: pics("perlengkapan", 5)
         },
         {
             slug: "mc", name: "MC", emoji: "🎙️",
             tagline: "Pembawa energi di atas panggung",
-            message: ["[Edit: pesan untuk MC]", "Kalian menjaga suasana tetap hidup dan alur tetap mengalir."],
-            closing: "Suara yang menyatukan semua orang. ✨",
+            message: ["Makasih banyak udah ngebawain acara dari awal sampe kelar, Sumpah jadi kan MC yang harus tetep keliatan seru dan senyum terus itu bingung juga sih naro space buat nervousnya dimana? apalagi mikirin jokes dadakan wkwkwk"],
+            closing: "Pokoknya kalian gokill abiss. ✨",
             photos: pics("mc", 5)
         },
         {
             slug: "bw-kids", name: "BW Kids", emoji: "🧸",
             tagline: "Tawa kecil, kenangan besar",
-            message: ["[Edit: pesan untuk BW Kids]", "Keceriaan kalian jadi bagian paling menggemaskan dari acara ini."],
-            closing: "Terima kasih sudah bikin hari kami ceria. 🌈",
+            message: ["Alloo adik adik BW Kids, Aku mau ucapin makasih yaa udah rajin, berani tampil di depan banyak orang, dan bikin suasana Hangout jadi lebih seruu, Buat Papi dan Mami Nanti di save ya foto foto yang ada di drivenya hahaha"],
+            closing: "Asli lebih jago mereka nyanyinya dari pada aku wkwkwk",
             photos: pics("bw-kids", 5)
         },
         {
             slug: "dokumentasi", name: "Dokumentasi", emoji: "📸",
-            tagline: "Para penjaga kenangan",
-            message: ["[Edit: pesan khusus untuk timku sendiri]", "Kalian luar biasa. Dari balik lensa kita menyimpan semuanya."],
+            tagline: "Dokum juga mau di dokumin",
+            message: ["Gaiss makasih banget yaa, sumpah aku terbantu sekali di event ini buat foto foto dan bikin konten ya walau sebagian memang ada sedikit kendala tapi gapapa, kalian keren banget udah bantu capture semua momen dari awal sampe akhir, sangat appreciate ke kalian semua hehehe"],
             closing: "The memory keepers. 📸🤍",
             photos: pics("dokumentasi", 5)
         }

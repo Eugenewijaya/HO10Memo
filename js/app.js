@@ -234,11 +234,11 @@ async function renderDivision() {
         return `<div class="pol-pos" style="left:${x}%;top:${y}%;z-index:${zIndex}">
             <div class="pol" style="--enter:${enterPol};animation-delay:${(i * 0.12).toFixed(2)}s">
                 <button class="pol-in" data-i="${i}" style="--rot:${rot}deg;--float-delay:${floatDelay}s;--rot-drift:${rotDrift}deg" aria-label="Lihat foto ${i + 1}">
-                    <img src="${src}" alt="${d.name} ${i + 1}" loading="eager" decoding="async">
+                    <img src="${src}" alt="${d.name} ${i + 1}" loading="eager" decoding="async" onload="if(this.naturalWidth&&this.naturalHeight)this.style.setProperty('--ar',this.naturalWidth+'/'+this.naturalHeight)">
                 </button>
             </div>
         </div>`;
-    }).join('') + `<span class="pol-count">📷 ${m} foto · ketuk</span>`
+    }).join('')
     : [
         { x: 22, y: 4, rot: -7, z: 10, label: 'slot 1' },
         { x: 50, y: 0, rot: 2, z: 25, label: 'segera hadir' },
@@ -256,7 +256,7 @@ async function renderDivision() {
                 </div>
             </div>
         </div>
-    `).join('') + `<span class="pol-count">📸 3 frame polaroid</span>`;
+    `).join('');
 
     // Konten yang dirender HANYA foto dan kertas pesan
     $('#division-content').innerHTML = `
@@ -266,9 +266,21 @@ async function renderDivision() {
             <p class="p-label rv" style="--i:1">Untuk ${d.name}</p>
             ${para([].concat(d.message), 2)}
             <div class="div-closing rv" style="--i:${[].concat(d.message).length + 3}">${d.closing || ''}</div>
+            <div class="paper-actions rv" style="--i:${[].concat(d.message).length + 4}">
+                <button class="btn-share-story" data-div="${divIdx}" aria-label="Share Story 9:16">
+                    <span>📸</span>
+                    <span>Bagikan Story (9:16)</span>
+                    <span>✨</span>
+                </button>
+            </div>
         </article>`;
 
     $('#division-content').onclick = e => {
+        const shareBtn = e.target.closest('.btn-share-story');
+        if (shareBtn) {
+            storyModal.open(divIdx, photos);
+            return;
+        }
         const b = e.target.closest('.pol-in[data-i]');
         if (b) lightbox.open(photos, +b.dataset.i, d.name);
     };
@@ -326,6 +338,445 @@ const lightbox = (() => {
         if (e.key === 'Escape') close(); else if (e.key === 'ArrowLeft') step(-1); else if (e.key === 'ArrowRight') step(1);
     });
     return { open(l, idx, t) { list = l; i = idx; title = t; box.hidden = false; show(); } };
+})();
+
+/* ================= MODAL & GENERATOR STORY CARD 9:16 ================= */
+const storyModal = (() => {
+    const modal = $('#share-modal');
+    if (!modal) return { open() {} };
+
+    const loading = $('#share-loading');
+    const previewImg = $('#share-preview-img');
+    const btnDownload = $('#btn-download-story');
+    const btnNative = $('#btn-native-share');
+    const btnClose = $('.share-modal-close');
+    const backdrop = $('.share-modal-backdrop');
+
+    let currentBlob = null;
+    let currentDataUrl = null;
+    let currentDivisionName = '';
+
+    const close = () => { modal.hidden = true; };
+    if (btnClose) btnClose.onclick = close;
+    if (backdrop) backdrop.onclick = close;
+    addEventListener('keydown', e => { if (!modal.hidden && e.key === 'Escape') close(); });
+
+    function wrapLines(ctx, text, maxWidth) {
+        const words = text.split(/\s+/);
+        const lines = [];
+        let cur = '';
+        for (const w of words) {
+            const test = cur ? cur + ' ' + w : w;
+            if (ctx.measureText(test).width > maxWidth && cur) {
+                lines.push(cur);
+                cur = w;
+            } else {
+                cur = test;
+            }
+        }
+        if (cur) lines.push(cur);
+        return lines;
+    }
+
+    function loadImageHelper(src) {
+        return new Promise(res => {
+            if (!src) return res(null);
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => res(img);
+            img.onerror = () => res(null);
+            img.src = src;
+        });
+    }
+
+    async function drawStory(d, photos) {
+        const W = 1080, H = 1920;
+        const cv = document.createElement('canvas');
+        cv.width = W; cv.height = H;
+        const g = cv.getContext('2d');
+
+        // Pastikan Google Fonts sudah ter-render sempurna
+        if (document.fonts && document.fonts.ready) {
+            try { await document.fonts.ready; } catch (e) {}
+        }
+
+        // Muat logo & foto
+        const [logoBw, logoHo, heroPhoto] = await Promise.all([
+            loadImageHelper('images/header-img/BW LOGO ORIGINAL.png'),
+            loadImageHelper('images/header-img/HANGOUT LOGO.png'),
+            photos && photos.length ? loadImageHelper(photos[0]) : null
+        ]);
+
+        // 1. Background gradient kosmik
+        const bgGrad = g.createLinearGradient(0, 0, 0, H);
+        bgGrad.addColorStop(0, '#130528');
+        bgGrad.addColorStop(0.35, '#260e4c');
+        bgGrad.addColorStop(0.7, '#180733');
+        bgGrad.addColorStop(1, '#0d021c');
+        g.fillStyle = bgGrad;
+        g.fillRect(0, 0, W, H);
+
+        // 2. Pancaran sinar keemasan (sunburst rays dari x: 540, y: 520)
+        g.save();
+        g.translate(540, 520);
+        for (let i = 0; i < 36; i++) {
+            g.beginPath();
+            g.moveTo(0, 0);
+            const a1 = (i * 10) * Math.PI / 180;
+            const a2 = (i * 10 + 4.2) * Math.PI / 180;
+            g.arc(0, 0, 1600, a1, a2);
+            g.closePath();
+            g.fillStyle = 'rgba(255, 215, 120, 0.05)';
+            g.fill();
+        }
+        g.restore();
+
+        // 3. Inti cahaya emas radial (golden core glow)
+        const core = g.createRadialGradient(540, 520, 40, 540, 520, 650);
+        core.addColorStop(0, 'rgba(255, 225, 130, 0.28)');
+        core.addColorStop(0.45, 'rgba(245, 185, 50, 0.10)');
+        core.addColorStop(1, 'rgba(245, 185, 50, 0)');
+        g.fillStyle = core;
+        g.fillRect(0, 0, W, H);
+
+        // 4. Bintang-bintang emas berkelip
+        const stars = [
+            [120, 180, 14], [940, 160, 18], [160, 480, 20], [920, 520, 16],
+            [90, 880, 14], [970, 930, 22], [140, 1720, 18], [930, 1750, 20],
+            [320, 310, 12], [760, 320, 12], [220, 780, 15], [860, 790, 15]
+        ];
+        g.fillStyle = '#fff4ba';
+        for (const [sx, sy, sz] of stars) {
+            g.save();
+            g.translate(sx, sy);
+            g.shadowColor = '#ffc83b';
+            g.shadowBlur = 12;
+            g.beginPath();
+            g.moveTo(0, -sz);
+            g.quadraticCurveTo(sz * 0.1, -sz * 0.1, sz, 0);
+            g.quadraticCurveTo(sz * 0.1, sz * 0.1, 0, sz);
+            g.quadraticCurveTo(-sz * 0.1, sz * 0.1, -sz, 0);
+            g.quadraticCurveTo(-sz * 0.1, -sz * 0.1, 0, -sz);
+            g.fill();
+            g.restore();
+        }
+
+        // 5. Header Capsule: Logo BW & Hangout (y: 80, h: 76)
+        const pillW = 380, pillH = 76, pillX = (W - pillW) / 2, pillY = 80;
+        g.save();
+        g.beginPath();
+        g.roundRect(pillX, pillY, pillW, pillH, pillH / 2);
+        g.fillStyle = 'rgba(24, 10, 52, 0.88)';
+        g.fill();
+        g.lineWidth = 1.8;
+        g.strokeStyle = 'rgba(245, 196, 81, 0.65)';
+        g.shadowColor = 'rgba(245, 196, 81, 0.35)';
+        g.shadowBlur = 16;
+        g.stroke();
+        g.restore();
+
+        if (logoBw) {
+            g.drawImage(logoBw, pillX + 38, pillY + 12, 52, 52);
+        }
+        if (logoHo) {
+            g.drawImage(logoHo, pillX + 160, pillY + 10, 170, 56);
+        }
+
+        // 6. Header Event Title
+        g.textAlign = 'center';
+        g.font = '700 24px "Playfair Display", serif';
+        g.fillStyle = '#f5c451';
+        g.fillText('✦ MEMORY JOURNAL · HO10 ✦', 540, 205);
+
+        const goldGrad = g.createLinearGradient(200, 0, 880, 0);
+        goldGrad.addColorStop(0, '#fcedc7');
+        goldGrad.addColorStop(0.5, '#f5c451');
+        goldGrad.addColorStop(1, '#ffdf88');
+
+        g.font = 'italic 800 48px "Playfair Display", serif';
+        g.fillStyle = goldGrad;
+        g.shadowColor = 'rgba(245, 196, 81, 0.4)';
+        g.shadowBlur = 18;
+        g.fillText('A Golden Appreciation Letter', 540, 268);
+        g.shadowBlur = 0;
+
+        // 7. Divisi Badge & Judul
+        g.font = '54px serif';
+        g.fillText(d.emoji || '✨', 540, 348);
+
+        g.font = '800 62px "Playfair Display", serif';
+        g.fillStyle = goldGrad;
+        g.shadowColor = 'rgba(245, 196, 81, 0.5)';
+        g.shadowBlur = 20;
+        g.fillText(d.name, 540, 424);
+        g.shadowBlur = 0;
+
+        if (d.tagline) {
+            g.font = '28px "Patrick Hand", cursive';
+            g.fillStyle = '#ffe8a3';
+            g.fillText(d.tagline, 540, 468);
+        }
+
+        // 8. Polaroid Frame Cantik (y: 505 - 890)
+        const pw = 400, ph = 390;
+        g.save();
+        g.translate(540, 680);
+        g.rotate(-2.2 * Math.PI / 180);
+        g.shadowColor = 'rgba(8, 2, 24, 0.65)';
+        g.shadowBlur = 32;
+        g.shadowOffsetY = 14;
+
+        // Kartu kertas polaroid krem
+        g.fillStyle = '#f7ecd2';
+        g.beginPath();
+        g.roundRect(-pw / 2, -ph / 2, pw, ph, 8);
+        g.fill();
+        g.shadowColor = 'transparent';
+        g.lineWidth = 1.2;
+        g.strokeStyle = 'rgba(245, 196, 81, 0.5)';
+        g.stroke();
+
+        // Area Foto di dalam polaroid (w: 360, h: 295)
+        const imgBoxW = 360, imgBoxH = 295;
+        const imgBoxX = -imgBoxW / 2, imgBoxY = -ph / 2 + 20;
+
+        g.save();
+        g.beginPath();
+        g.roundRect(imgBoxX, imgBoxY, imgBoxW, imgBoxH, 4);
+        g.clip();
+
+        if (heroPhoto) {
+            const pRatio = heroPhoto.naturalWidth / heroPhoto.naturalHeight;
+            const bRatio = imgBoxW / imgBoxH;
+            let dw = imgBoxW, dh = imgBoxH, dx = imgBoxX, dy = imgBoxY;
+            if (pRatio > bRatio) {
+                dw = imgBoxH * pRatio;
+                dx = imgBoxX - (dw - imgBoxW) / 2;
+            } else {
+                dh = imgBoxW / pRatio;
+                dy = imgBoxY - (dh - imgBoxH) / 2;
+            }
+            g.drawImage(heroPhoto, dx, dy, dw, dh);
+        } else {
+            const polGrad = g.createLinearGradient(imgBoxX, imgBoxY, imgBoxX + imgBoxW, imgBoxY + imgBoxH);
+            polGrad.addColorStop(0, '#2b1254');
+            polGrad.addColorStop(1, '#1b0936');
+            g.fillStyle = polGrad;
+            g.fillRect(imgBoxX, imgBoxY, imgBoxW, imgBoxH);
+
+            g.font = '68px serif';
+            g.textAlign = 'center';
+            g.fillText(d.emoji || '📸', 0, imgBoxY + 120);
+
+            g.font = '28px "Patrick Hand", cursive';
+            g.fillStyle = '#f5c451';
+            g.fillText('Momen Tak Terlupakan', 0, imgBoxY + 175);
+
+            g.font = '22px "Patrick Hand", cursive';
+            g.fillStyle = '#e8d2a6';
+            g.fillText('HO10 · Hangout x BW', 0, imgBoxY + 215);
+        }
+        g.restore();
+
+        // Tulisan di bawah foto polaroid (chin)
+        g.font = '600 28px "Caveat", cursive';
+        g.fillStyle = '#422415';
+        g.textAlign = 'center';
+        g.fillText(`${d.name} · Memories`, 0, ph / 2 - 24);
+        g.restore();
+
+        // 9. Kertas Memo Pesan (y: 920 - 1700)
+        const paperW = 920, paperH = 750, paperX = (W - paperW) / 2, paperY = 925;
+        g.save();
+        g.shadowColor = 'rgba(8, 2, 24, 0.65)';
+        g.shadowBlur = 35;
+        g.shadowOffsetY = 16;
+
+        g.beginPath();
+        g.roundRect(paperX, paperY, paperW, paperH, 20);
+        const pGrad = g.createLinearGradient(paperX, paperY, paperX + paperW, paperY + paperH);
+        pGrad.addColorStop(0, '#240f44');
+        pGrad.addColorStop(1, '#17062e');
+        g.fillStyle = pGrad;
+        g.fill();
+
+        g.shadowColor = 'transparent';
+        g.lineWidth = 1.5;
+        g.strokeStyle = 'rgba(245, 196, 81, 0.42)';
+        g.stroke();
+
+        // Masking tape emas di tengah atas memo
+        g.save();
+        g.translate(540, paperY);
+        g.rotate(-1.5 * Math.PI / 180);
+        g.fillStyle = 'rgba(245, 196, 81, 0.32)';
+        g.fillRect(-65, -16, 130, 32);
+        g.strokeStyle = 'rgba(245, 196, 81, 0.48)';
+        g.strokeRect(-65, -16, 130, 32);
+        g.restore();
+
+        // Garis-garis ruled berbaris halus
+        g.strokeStyle = 'rgba(245, 196, 81, 0.12)';
+        g.lineWidth = 1;
+        for (let ly = paperY + 110; ly < paperY + paperH - 120; ly += 42) {
+            g.beginPath();
+            g.moveTo(paperX + 45, ly);
+            g.lineTo(paperX + paperW - 45, ly);
+            g.stroke();
+        }
+
+        // Label memo
+        g.textAlign = 'left';
+        g.font = '700 24px "Playfair Display", serif';
+        g.fillStyle = '#f5c451';
+        g.fillText(`SEBUAH PESAN UNTUK ${d.name.toUpperCase()}`, paperX + 55, paperY + 70);
+
+        // Garis batas label
+        g.strokeStyle = 'rgba(245, 196, 81, 0.35)';
+        g.lineWidth = 1.2;
+        g.beginPath();
+        g.moveTo(paperX + 55, paperY + 86);
+        g.lineTo(paperX + paperW - 55, paperY + 86);
+        g.stroke();
+
+        // Teks pesan (Paragraf demi paragraf)
+        const msgList = [].concat(d.message);
+        const maxTextW = paperW - 110;
+        let textY = paperY + 140;
+        const fontSize = msgList.length > 3 ? 28 : 31;
+        const lineH = fontSize + 16;
+        g.font = `${fontSize}px "Patrick Hand", cursive`;
+        g.fillStyle = '#fff4db';
+
+        for (const p of msgList) {
+            const clean = p.replace(/<[^>]+>/g, '');
+            const pLines = wrapLines(g, clean, maxTextW);
+            for (const l of pLines) {
+                if (textY < paperY + paperH - 170) {
+                    g.fillText(l, paperX + 55, textY);
+                    textY += lineH;
+                }
+            }
+            textY += 12; // spasi antar paragraf
+        }
+
+        // Garis pemisah sebelum penutup memo
+        const footLineY = paperY + paperH - 130;
+        g.strokeStyle = 'rgba(245, 196, 81, 0.28)';
+        g.lineWidth = 1;
+        g.beginPath();
+        g.moveTo(paperX + 55, footLineY);
+        g.lineTo(paperX + paperW - 55, footLineY);
+        g.stroke();
+
+        // Closing & Signature
+        if (d.closing) {
+            g.font = 'italic 26px "Patrick Hand", cursive';
+            g.fillStyle = '#ffd875';
+            g.textAlign = 'left';
+            g.fillText(d.closing, paperX + 55, footLineY + 40);
+        }
+
+        g.textAlign = 'right';
+        g.font = '600 36px "Caveat", cursive';
+        g.fillStyle = '#ffe8a3';
+        g.fillText('Salam hangat, Epid ✨', paperX + paperW - 55, footLineY + 80);
+        g.font = '22px "Patrick Hand", cursive';
+        g.fillStyle = '#f5c451';
+        g.fillText('PIC Dokumentasi', paperX + paperW - 55, footLineY + 110);
+
+        g.restore();
+
+        // 10. Footer Card (y: 1720 - 1880)
+        g.textAlign = 'center';
+        g.font = '22px "Patrick Hand", cursive';
+        g.fillStyle = 'rgba(245, 196, 81, 0.8)';
+        g.fillText('✦ ✦ ✦   BW x Hangout 10th Anniversary · Memory Journal   ✦ ✦ ✦', 540, 1780);
+
+        // Badge pill footer
+        const fbW = 440, fbH = 54, fbX = (W - fbW) / 2, fbY = 1815;
+        g.save();
+        g.beginPath();
+        g.roundRect(fbX, fbY, fbW, fbH, fbH / 2);
+        g.fillStyle = 'rgba(28, 12, 60, 0.9)';
+        g.fill();
+        g.lineWidth = 1.4;
+        g.strokeStyle = 'rgba(245, 196, 81, 0.55)';
+        g.stroke();
+        g.restore();
+
+        g.font = 'bold 24px "Patrick Hand", cursive';
+        g.fillStyle = '#ffeaa7';
+        g.fillText('Dokumentasi oleh @epidoey 📸', 540, fbY + 36);
+
+        return new Promise(resolve => {
+            cv.toBlob(blob => {
+                const dataUrl = cv.toDataURL('image/png');
+                resolve({ blob, dataUrl });
+            }, 'image/png', 0.95);
+        });
+    }
+
+    async function open(idx, photos) {
+        modal.hidden = false;
+        loading.hidden = false;
+        previewImg.hidden = true;
+        btnDownload.disabled = true;
+        btnNative.hidden = true;
+
+        const d = DIVS[idx];
+        currentDivisionName = d ? d.name.replace(/[^a-zA-Z0-9]/g, '-') : 'Divisi';
+
+        try {
+            const { blob, dataUrl } = await drawStory(d, photos);
+            currentBlob = blob;
+            currentDataUrl = dataUrl;
+
+            previewImg.src = dataUrl;
+            previewImg.hidden = false;
+            loading.hidden = true;
+            btnDownload.disabled = false;
+
+            // Periksa dukungan Web Share API untuk file foto
+            if (navigator.canShare && blob) {
+                const testFile = new File([blob], `HO10-${currentDivisionName}-Story.png`, { type: 'image/png' });
+                if (navigator.canShare({ files: [testFile] })) {
+                    btnNative.hidden = false;
+                }
+            }
+        } catch (err) {
+            console.error('Error generating story card:', err);
+            loading.innerHTML = `<p style="color:#ff8080">Gagal membuat story card.<br>${err.message}</p>`;
+        }
+    }
+
+    btnDownload.onclick = () => {
+        if (!currentDataUrl) return;
+        const a = document.createElement('a');
+        a.href = currentDataUrl;
+        a.download = `HO10-${currentDivisionName}-Story.png`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        toast();
+        $('#toast').textContent = 'Foto Story 9:16 berhasil diunduh! 📸✨';
+    };
+
+    btnNative.onclick = async () => {
+        if (!currentBlob) return;
+        try {
+            const file = new File([currentBlob], `HO10-${currentDivisionName}-Story.png`, { type: 'image/png' });
+            await navigator.share({
+                title: `A Golden Appreciation Letter - ${currentDivisionName}`,
+                text: `Pesan apresiasi untuk ${currentDivisionName} di HO10 ✨`,
+                files: [file]
+            });
+        } catch (e) {
+            if (e.name !== 'AbortError') console.error('Share error:', e);
+        }
+    };
+
+    return { open };
 })();
 
 /* ================= UTIL ================= */
