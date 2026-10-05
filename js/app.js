@@ -185,16 +185,45 @@ async function renderDivision() {
     if (token !== renderToken) return;           // user sudah pindah divisi
     slides.play(photos);
 
-    const enterPol = `enter${divIdx % 10}`, enterPaper = `enter${(divIdx + 4) % 10}`;
+    const animList = [
+        'enterDrop', 'enterFlip', 'enterSwing', 'enterSettle', 'enterSnap',
+        'enterSlide', 'enterStamp', 'enterPop', 'enterBounce', 'enterDarkroom'
+    ];
+    const enterPol = animList[divIdx % animList.length];
+    const enterPaper = animList[(divIdx + 3) % animList.length];
     const m = photos.length;
     const pols = m ? photos.map((src, i) => {
-        const x = m === 1 ? 50 : 20 + 60 * i / (m - 1);
-        const y = i % 2 ? 40 : 0;
-        return `<div class="pol-pos" style="left:${x}%;top:${y + rand(-1.5, 1.5)}%;z-index:${(i % 2 ? 20 : 10) + i}">
-            <div class="pol" style="--enter:${enterPol};animation-delay:${i * .14}s">
-                <button class="pol-in" data-i="${i}" style="--rot:${rand(-12, 12).toFixed(1)}deg" aria-label="Lihat foto ${i + 1}">
+        let x = 50, y = 2, rot = 0;
+        if (m === 1) {
+            x = 50; y = 2; rot = -2;
+        } else if (m === 2) {
+            x = i === 0 ? 35 : 65;
+            y = i === 0 ? 3 : 5;
+            rot = i === 0 ? -6 : 6;
+        } else if (m === 3) {
+            // 3 Foto: lengkungan scrapbook manis & seimbang
+            x = i === 0 ? 22 : (i === 1 ? 50 : 78);
+            y = i === 1 ? 0 : 4;
+            rot = i === 0 ? -7 : (i === 1 ? 2 : 7);
+        } else {
+            // 4 Foto (atau lebih): cluster scrapbook bertumpuk rapi
+            const step = 66 / (m - 1);
+            x = 17 + (i * step);
+            y = (i === 1 || i === 2) ? (i === 1 ? 0 : 2) : 5;
+            rot = i === 0 ? -8 : (i === 1 ? 3 : (i === 2 ? -4 : 7));
+        }
+
+        const zIndex = (m === 3 && i === 1) ? 25 : (m >= 4 && (i === 1 || i === 2) ? 22 + i : 10 + i);
+        const floatDelay = (i * 0.45).toFixed(2);
+        const rotDrift = (i % 2 === 0 ? 1.5 : -1.5);
+
+        return `<div class="pol-pos" style="left:${x}%;top:${y}%;z-index:${zIndex}">
+            <div class="pol" style="--enter:${enterPol};animation-delay:${(i * 0.12).toFixed(2)}s">
+                <button class="pol-in" data-i="${i}" style="--rot:${rot}deg;--float-delay:${floatDelay}s;--rot-drift:${rotDrift}deg" aria-label="Lihat foto ${i + 1}">
                     <img src="${src}" alt="${d.name} ${i + 1}" loading="eager" decoding="async">
-                </button></div></div>`;
+                </button>
+            </div>
+        </div>`;
     }).join('') + `<span class="pol-count">📷 ${m} foto · ketuk</span>`
     : `<div class="pol-pos" style="left:50%;top:6%"><div class="pol" style="--enter:${enterPol}">
             <div class="pol-in" style="--rot:-4deg;cursor:default"><div class="pol-empty"><div>${d.emoji || '📸'}<small>foto segera hadir</small></div></div></div></div></div>`;
