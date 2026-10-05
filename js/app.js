@@ -461,8 +461,8 @@ const storyModal = (() => {
             g.restore();
         }
 
-        // 5. Header Capsule: Logo BW & Hangout (y: 80, h: 76)
-        const pillW = 380, pillH = 76, pillX = (W - pillW) / 2, pillY = 80;
+        // 5. Header Capsule: Logo BW & Hangout (y: 80, h: 80)
+        const pillW = 280, pillH = 80, pillX = (W - pillW) / 2, pillY = 80;
         g.save();
         g.beginPath();
         g.roundRect(pillX, pillY, pillW, pillH, pillH / 2);
@@ -475,29 +475,41 @@ const storyModal = (() => {
         g.stroke();
         g.restore();
 
+        const logoSize = 56;
+        const logoGap = 40;
+        const totalLogoW = logoSize * 2 + logoGap;
+        const startX = (W - totalLogoW) / 2;
+        const logoY = pillY + (pillH - logoSize) / 2;
+
         if (logoBw) {
-            g.drawImage(logoBw, pillX + 38, pillY + 12, 52, 52);
+            g.drawImage(logoBw, startX, logoY, logoSize, logoSize);
         }
+
+        g.font = '22px serif';
+        g.fillStyle = 'rgba(245, 196, 81, 0.75)';
+        g.textAlign = 'center';
+        g.fillText('✕', startX + logoSize + logoGap / 2, logoY + logoSize / 2 + 7);
+
         if (logoHo) {
-            g.drawImage(logoHo, pillX + 160, pillY + 10, 170, 56);
+            g.drawImage(logoHo, startX + logoSize + logoGap, logoY, logoSize, logoSize);
         }
 
         // 6. Header Event Title
         g.textAlign = 'center';
         g.font = '700 24px "Playfair Display", serif';
         g.fillStyle = '#f5c451';
-        g.fillText('✦ MEMORY JOURNAL · HO10 ✦', 540, 205);
+        g.fillText('✦ HANGOUT 10 · MEMORY JOURNAL ✦', 540, 205);
 
         const goldGrad = g.createLinearGradient(200, 0, 880, 0);
         goldGrad.addColorStop(0, '#fcedc7');
         goldGrad.addColorStop(0.5, '#f5c451');
         goldGrad.addColorStop(1, '#ffdf88');
 
-        g.font = 'italic 800 48px "Playfair Display", serif';
+        g.font = 'italic 800 46px "Playfair Display", serif';
         g.fillStyle = goldGrad;
         g.shadowColor = 'rgba(245, 196, 81, 0.4)';
         g.shadowBlur = 18;
-        g.fillText('A Golden Appreciation Letter', 540, 268);
+        g.fillText('A Glimpse of Our Journey Together', 540, 268);
         g.shadowBlur = 0;
 
         // 7. Divisi Badge & Judul
@@ -689,16 +701,20 @@ const storyModal = (() => {
 
         // 10. Footer Card (y: 1720 - 1880)
         g.textAlign = 'center';
-        g.font = '22px "Patrick Hand", cursive';
-        g.fillStyle = 'rgba(245, 196, 81, 0.8)';
-        g.fillText('✦ ✦ ✦   BW x Hangout 10th Anniversary · Memory Journal   ✦ ✦ ✦', 540, 1780);
+        g.font = '700 25px "Playfair Display", serif';
+        g.fillStyle = 'rgba(245, 196, 81, 0.95)';
+        g.fillText('✦ Hangout Buddhist Worship ✦', 540, 1750);
+
+        g.font = 'italic 28px "Playfair Display", serif';
+        g.fillStyle = '#fff2cb';
+        g.fillText('"A Journey Together"', 540, 1790);
 
         // Badge pill footer
-        const fbW = 440, fbH = 54, fbX = (W - fbW) / 2, fbY = 1815;
+        const fbW = 440, fbH = 52, fbX = (W - fbW) / 2, fbY = 1824;
         g.save();
         g.beginPath();
         g.roundRect(fbX, fbY, fbW, fbH, fbH / 2);
-        g.fillStyle = 'rgba(28, 12, 60, 0.9)';
+        g.fillStyle = 'rgba(28, 12, 60, 0.92)';
         g.fill();
         g.lineWidth = 1.4;
         g.strokeStyle = 'rgba(245, 196, 81, 0.55)';
@@ -707,7 +723,7 @@ const storyModal = (() => {
 
         g.font = 'bold 24px "Patrick Hand", cursive';
         g.fillStyle = '#ffeaa7';
-        g.fillText('Dokumentasi oleh @epidoey 📸', 540, fbY + 36);
+        g.fillText('Dokumentasi oleh @epidoey 📸', 540, fbY + 35);
 
         return new Promise(resolve => {
             cv.toBlob(blob => {

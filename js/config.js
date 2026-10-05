@@ -66,7 +66,7 @@ const CONFIG = {
         },
         {
             slug: "musik-vocal", name: "Musik Vocal", emoji: "🎤",
-            tagline: "Bilangin sama matahari ini yang paling terang",
+            tagline: "Bilangin ke matahari ini yang paling terang",
             message: ["Aku tau di balik kerennya penampilan kalian di panggung pasti banyak banget latihannya, ga cuma di studio aja kann siapa tau di kamar mandi atau di depan kaca, terus belum lagi rasa deg-degan pas mau naik panggung tapi kalian berhasil negbuktiin kalo semuanya worth it bangett wkwkwk"],
             closing: " Gue apresiasi kalian segede gedenyaaa",
             photos: pics("musik-vocal", 5)
@@ -74,21 +74,21 @@ const CONFIG = {
         {
             slug: "dance", name: "Dance", emoji: "💃",
             tagline: "Ini sih yang bikin makin seru",
-            message: ["Sebelumnya maaf yaa, aku pas latihan ngga sempet dateng ke studio dance hehe, tapi pas hari H aslii keren banget coyy"],
+            message: ["Sebelumnya maaf yaa, aku pas latihan ngga sempet dateng ke studio dance hehe, tapi pas hari H aslii keren banget coyy, penampilan kalian bener bener jadi salah satu highlight utama yang bikin acaranya makin meledakkk"],
             closing: "Proud bangett WKKWKWK. 🔥",
             photos: pics("dance", 5)
         },
         {
             slug: "event", name: "Event", emoji: "🎪",
             tagline: "Ini nih yang kabur semua pas di rekam",
-            message: ["Gaiss Thankyou yaa, udah ngerangkai acaranya sampai berjalan bener bener tuntas, ngeliat kalian yang repot banget ngurusin banyak hal yang complicated itu bikin salut banget sihh asli sumpah ini aja ngetik ga pake AI"],
+            message: ["Gaiss Thankyou yaa, udah ngerangkai acaranya sampai berjalan bener bener tuntas, ngeliat kalian yang repot banget ngurusin banyak hal yang complicated, itu bikin salute banget sihh asli sumpah ini aja ngetik ga pake AI"],
             closing: "Maju lo semua gue beliin teazzi.",
             photos: pics("event", 5)
         },
         {
             slug: "mulmed", name: "Mulmed", emoji: "🎬",
             tagline: "Masih kerabat lah sama dokum yak",
-            message: ["Makasih udah bantu manage visual sebaik baiknya, ayam jago aja minder liat anak mulmed"],
+            message: ["Kita tau jadi anak mulmed itu riwehnya minta ampun,harus stay terus, mata ga boleh lepas dari monitor dan pasang kuping biar cuenya ga meleset wkwkwk, Makasih udah bantu manage visual sebaik baiknya, ayam jago aja minder liat anak mulmed"],
             closing: "Kelasss Kinggg",
             photos: pics("mulmed", 5)
         },
@@ -102,14 +102,14 @@ const CONFIG = {
         {
             slug: "perlengkapan", name: "Perlengkapan", emoji: "🛠️",
             tagline: "Semuanya ada kalo dia ada",
-            message: ["Angkat, pasang, bongkar, cari barang yang hilang sampe nyediain konsumsi buat tim, itu capeknya kalo di convert jadi saldo gopay bisa kebeli nasi kuning."],
+            message: ["Angkat, pasang, bongkar, cari barang yang hilang sampe nyediain konsumsi buat tim, itu capeknya kalo di convert jadi saldo gopay bisa kebeli nasi kuning sama siomay lagi."],
             closing: "The Real Act of Service gasihhh",
             photos: pics("perlengkapan", 5)
         },
         {
             slug: "mc", name: "MC", emoji: "🎙️",
             tagline: "Pembawa energi di atas panggung",
-            message: ["Makasih banyak udah ngebawain acara dari awal sampe kelar, Sumpah jadi kan MC yang harus tetep keliatan seru dan senyum terus itu bingung juga sih naro space buat nervousnya dimana? apalagi mikirin jokes dadakan wkwkwk"],
+            message: ["Makasih banyak udah ngebawain acara dari awal sampe kelar, Sumpah jadi MC yang harus tetep keliatan seru dan senyum terus itu bingung juga sih naro space buat nervousnya dimana? apalagi mikirin jokes dadakan wkwkwk"],
             closing: "Pokoknya kalian gokill abiss. ✨",
             photos: pics("mc", 5)
         },
