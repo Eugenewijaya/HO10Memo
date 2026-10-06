@@ -671,7 +671,35 @@ img { display: block; max-width: 100%; }
 }
 .share-modal-desc {
     font-size: clamp(0.82rem, 0.75rem + 0.3vw, 0.92rem);
-    color: var(--ink-dim); margin-bottom: 0.6rem;
+    color: var(--ink-dim); margin-bottom: 0.4rem;
+}
+.share-slide-tabs {
+    display: flex; gap: 6px; justify-content: center;
+    flex-wrap: wrap; margin-bottom: 0.65rem; width: 100%;
+}
+.share-tab-btn {
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-family: inherit;
+    font-weight: 600;
+    background: rgba(245, 196, 81, 0.1);
+    color: var(--ink-dim);
+    border: 1px solid rgba(245, 196, 81, 0.3);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.share-tab-btn:hover {
+    background: rgba(245, 196, 81, 0.22);
+    color: var(--gold-hi);
+    border-color: rgba(245, 196, 81, 0.6);
+}
+.share-tab-btn.active {
+    background: linear-gradient(135deg, #f5c451, #e6a728);
+    color: #1a0833;
+    border-color: #ffd875;
+    box-shadow: 0 0 14px rgba(245, 196, 81, 0.5);
+    transform: scale(1.04);
 }
 .share-preview-wrap {
     width: 100%; max-width: 230px;
@@ -685,6 +713,26 @@ img { display: block; max-width: 100%; }
     margin-bottom: 0.9rem;
     position: relative;
 }
+.share-nav-btn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(18, 5, 38, 0.82);
+    border: 1.5px solid rgba(245, 196, 81, 0.6);
+    color: var(--gold-hi);
+    font-size: 1.25rem; line-height: 1;
+    display: grid; place-items: center;
+    cursor: pointer; z-index: 10;
+    backdrop-filter: blur(6px);
+    transition: background 0.2s, transform 0.2s, border-color 0.2s;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+}
+.share-nav-btn:hover {
+    background: rgba(245, 196, 81, 0.35);
+    border-color: #ffe9a8;
+    transform: translateY(-50%) scale(1.12);
+}
+.share-nav-btn.prev { left: 8px; }
+.share-nav-btn.next { right: 8px; }
 .share-preview-wrap img {
     width: 100%; height: 100%; object-fit: contain; display: block;
 }

@@ -351,15 +351,57 @@ const storyModal = (() => {
     const btnNative = $('#btn-native-share');
     const btnClose = $('.share-modal-close');
     const backdrop = $('.share-modal-backdrop');
+    const tabsContainer = $('#share-slide-tabs');
+    const navPrev = $('#share-nav-prev');
+    const navNext = $('#share-nav-next');
+    const previewWrap = $('.share-preview-wrap');
 
     let currentBlob = null;
     let currentDataUrl = null;
     let currentDivisionName = '';
+    let currentDownloadName = '';
+
+    let currentOptions = [];
+    let currentOptIndex = 0;
+    let cachedRenders = {};
+    let loadedLogos = null;
+    let activeDivision = null;
+    let activeLoadedPhotos = [];
 
     const close = () => { modal.hidden = true; };
     if (btnClose) btnClose.onclick = close;
     if (backdrop) backdrop.onclick = close;
-    addEventListener('keydown', e => { if (!modal.hidden && e.key === 'Escape') close(); });
+    addEventListener('keydown', e => {
+        if (!modal.hidden) {
+            if (e.key === 'Escape') close();
+            else if (e.key === 'ArrowLeft' && currentOptions.length > 1) selectOption(currentOptIndex - 1);
+            else if (e.key === 'ArrowRight' && currentOptions.length > 1) selectOption(currentOptIndex + 1);
+        }
+    });
+
+    if (navPrev) navPrev.onclick = () => selectOption(currentOptIndex - 1);
+    if (navNext) navNext.onclick = () => selectOption(currentOptIndex + 1);
+    if (tabsContainer) {
+        tabsContainer.onclick = e => {
+            const btn = e.target.closest('.share-tab-btn');
+            if (btn && btn.dataset.idx !== undefined) {
+                selectOption(+btn.dataset.idx);
+            }
+        };
+    }
+
+    if (previewWrap) {
+        let touchStartX = 0;
+        previewWrap.addEventListener('touchstart', e => {
+            if (e.touches && e.touches.length) touchStartX = e.touches[0].clientX;
+        }, { passive: true });
+        previewWrap.addEventListener('touchend', e => {
+            if (!e.changedTouches || !e.changedTouches.length || currentOptions.length <= 1) return;
+            const diff = e.changedTouches[0].clientX - touchStartX;
+            if (diff > 40) selectOption(currentOptIndex - 1);
+            else if (diff < -40) selectOption(currentOptIndex + 1);
+        }, { passive: true });
+    }
 
     function wrapLines(ctx, text, maxWidth) {
         const words = text.split(/\s+/);
@@ -389,23 +431,89 @@ const storyModal = (() => {
         });
     }
 
-    async function drawStory(d, photos) {
+    function drawPolaroidCard(g, { cx, cy, rot, pw, ph, img, chinText, emoji, fallbackSub }) {
+        g.save();
+        g.translate(cx, cy);
+        g.rotate(rot * Math.PI / 180);
+        g.shadowColor = 'rgba(8, 2, 24, 0.65)';
+        g.shadowBlur = 30;
+        g.shadowOffsetY = 14;
+
+        // Kartu kertas polaroid krem
+        g.fillStyle = '#f7ecd2';
+        g.beginPath();
+        g.roundRect(-pw / 2, -ph / 2, pw, ph, 8);
+        g.fill();
+        g.shadowColor = 'transparent';
+        g.lineWidth = 1.2;
+        g.strokeStyle = 'rgba(245, 196, 81, 0.5)';
+        g.stroke();
+
+        // Area Foto di dalam polaroid (border samping/atas rapi & chin bawah untuk tulisan)
+        const padSide = 16;
+        const padTop = 16;
+        const chinH = 48;
+        const imgBoxW = pw - padSide * 2;
+        const imgBoxH = ph - padTop - chinH;
+        const imgBoxX = -imgBoxW / 2;
+        const imgBoxY = -ph / 2 + padTop;
+
+        g.save();
+        g.beginPath();
+        g.roundRect(imgBoxX, imgBoxY, imgBoxW, imgBoxH, 4);
+        g.clip();
+
+        if (img) {
+            const pRatio = img.naturalWidth / img.naturalHeight;
+            const bRatio = imgBoxW / imgBoxH;
+            let dw = imgBoxW, dh = imgBoxH, dx = imgBoxX, dy = imgBoxY;
+            if (pRatio > bRatio) {
+                dw = imgBoxH * pRatio;
+                dx = imgBoxX - (dw - imgBoxW) / 2;
+            } else {
+                dh = imgBoxW / pRatio;
+                dy = imgBoxY - (dh - imgBoxH) / 2;
+            }
+            g.drawImage(img, dx, dy, dw, dh);
+        } else {
+            const polGrad = g.createLinearGradient(imgBoxX, imgBoxY, imgBoxX + imgBoxW, imgBoxY + imgBoxH);
+            polGrad.addColorStop(0, '#2b1254');
+            polGrad.addColorStop(1, '#1b0936');
+            g.fillStyle = polGrad;
+            g.fillRect(imgBoxX, imgBoxY, imgBoxW, imgBoxH);
+
+            g.font = `${Math.round(pw * 0.16)}px serif`;
+            g.textAlign = 'center';
+            g.fillText(emoji || '📸', 0, imgBoxY + imgBoxH / 2 - 8);
+
+            g.font = '22px "Patrick Hand", cursive';
+            g.fillStyle = '#f5c451';
+            g.fillText(fallbackSub || 'Momen Tak Terlupakan', 0, imgBoxY + imgBoxH / 2 + 28);
+        }
+        g.restore();
+
+        // Tulisan di bawah foto polaroid (chin)
+        if (chinText) {
+            g.font = `600 ${Math.max(18, Math.round(pw * 0.072))}px "Caveat", cursive`;
+            g.fillStyle = '#422415';
+            g.textAlign = 'center';
+            g.fillText(chinText, 0, ph / 2 - 16);
+        }
+        g.restore();
+    }
+
+    async function drawStory(d, photoImgs, mode, logos) {
         const W = 1080, H = 1920;
         const cv = document.createElement('canvas');
         cv.width = W; cv.height = H;
         const g = cv.getContext('2d');
 
-        // Pastikan Google Fonts sudah ter-render sempurna
         if (document.fonts && document.fonts.ready) {
             try { await document.fonts.ready; } catch (e) {}
         }
 
-        // Muat logo & foto
-        const [logoBw, logoHo, heroPhoto] = await Promise.all([
-            loadImageHelper('images/header-img/BW LOGO ORIGINAL.png'),
-            loadImageHelper('images/header-img/HANGOUT LOGO.png'),
-            photos && photos.length ? loadImageHelper(photos[0]) : null
-        ]);
+        const logoBw = logos ? logos[0] : null;
+        const logoHo = logos ? logos[1] : null;
 
         // 1. Background gradient kosmik
         const bgGrad = g.createLinearGradient(0, 0, 0, H);
@@ -529,73 +637,60 @@ const storyModal = (() => {
             g.fillText(d.tagline, 540, 468);
         }
 
-        // 8. Polaroid Frame Cantik (y: 505 - 890)
-        const pw = 400, ph = 390;
-        g.save();
-        g.translate(540, 680);
-        g.rotate(-2.2 * Math.PI / 180);
-        g.shadowColor = 'rgba(8, 2, 24, 0.65)';
-        g.shadowBlur = 32;
-        g.shadowOffsetY = 14;
-
-        // Kartu kertas polaroid krem
-        g.fillStyle = '#f7ecd2';
-        g.beginPath();
-        g.roundRect(-pw / 2, -ph / 2, pw, ph, 8);
-        g.fill();
-        g.shadowColor = 'transparent';
-        g.lineWidth = 1.2;
-        g.strokeStyle = 'rgba(245, 196, 81, 0.5)';
-        g.stroke();
-
-        // Area Foto di dalam polaroid (w: 360, h: 295)
-        const imgBoxW = 360, imgBoxH = 295;
-        const imgBoxX = -imgBoxW / 2, imgBoxY = -ph / 2 + 20;
-
-        g.save();
-        g.beginPath();
-        g.roundRect(imgBoxX, imgBoxY, imgBoxW, imgBoxH, 4);
-        g.clip();
-
-        if (heroPhoto) {
-            const pRatio = heroPhoto.naturalWidth / heroPhoto.naturalHeight;
-            const bRatio = imgBoxW / imgBoxH;
-            let dw = imgBoxW, dh = imgBoxH, dx = imgBoxX, dy = imgBoxY;
-            if (pRatio > bRatio) {
-                dw = imgBoxH * pRatio;
-                dx = imgBoxX - (dw - imgBoxW) / 2;
+        // 8. Polaroid Frame Cantik (y: 505 - 910)
+        if (mode === 'all') {
+            const count = photoImgs.length;
+            if (count <= 1) {
+                drawPolaroidCard(g, {
+                    cx: 540, cy: 680, rot: -2.2, pw: 420, ph: 410,
+                    img: photoImgs[0] || null,
+                    chinText: `${d.name} · Memories`,
+                    emoji: d.emoji
+                });
+            } else if (count === 2) {
+                drawPolaroidCard(g, {
+                    cx: 350, cy: 685, rot: -5.5, pw: 340, ph: 360,
+                    img: photoImgs[0],
+                    chinText: `Foto 1 · ${d.name}`,
+                    emoji: d.emoji
+                });
+                drawPolaroidCard(g, {
+                    cx: 730, cy: 685, rot: 5.5, pw: 340, ph: 360,
+                    img: photoImgs[1],
+                    chinText: `Foto 2 · ${d.name}`,
+                    emoji: d.emoji
+                });
             } else {
-                dh = imgBoxW / pRatio;
-                dy = imgBoxY - (dh - imgBoxH) / 2;
+                // 3 foto (atau lebih)
+                drawPolaroidCard(g, {
+                    cx: 260, cy: 695, rot: -8, pw: 310, ph: 330,
+                    img: photoImgs[0],
+                    chinText: 'Foto 1',
+                    emoji: d.emoji
+                });
+                drawPolaroidCard(g, {
+                    cx: 820, cy: 695, rot: 8, pw: 310, ph: 330,
+                    img: photoImgs[2],
+                    chinText: 'Foto 3',
+                    emoji: d.emoji
+                });
+                drawPolaroidCard(g, {
+                    cx: 540, cy: 665, rot: 1.5, pw: 330, ph: 350,
+                    img: photoImgs[1],
+                    chinText: `Foto 2 · ${d.name}`,
+                    emoji: d.emoji
+                });
             }
-            g.drawImage(heroPhoto, dx, dy, dw, dh);
         } else {
-            const polGrad = g.createLinearGradient(imgBoxX, imgBoxY, imgBoxX + imgBoxW, imgBoxY + imgBoxH);
-            polGrad.addColorStop(0, '#2b1254');
-            polGrad.addColorStop(1, '#1b0936');
-            g.fillStyle = polGrad;
-            g.fillRect(imgBoxX, imgBoxY, imgBoxW, imgBoxH);
-
-            g.font = '68px serif';
-            g.textAlign = 'center';
-            g.fillText(d.emoji || '📸', 0, imgBoxY + 120);
-
-            g.font = '28px "Patrick Hand", cursive';
-            g.fillStyle = '#f5c451';
-            g.fillText('Momen Tak Terlupakan', 0, imgBoxY + 175);
-
-            g.font = '22px "Patrick Hand", cursive';
-            g.fillStyle = '#e8d2a6';
-            g.fillText('HO10 · Hangout x BW', 0, imgBoxY + 215);
+            const idx = typeof mode === 'number' ? mode : 0;
+            const targetImg = photoImgs[idx] || photoImgs[0] || null;
+            drawPolaroidCard(g, {
+                cx: 540, cy: 680, rot: -2.2, pw: 420, ph: 410,
+                img: targetImg,
+                chinText: `${d.name} · Foto ${idx + 1}`,
+                emoji: d.emoji
+            });
         }
-        g.restore();
-
-        // Tulisan di bawah foto polaroid (chin)
-        g.font = '600 28px "Caveat", cursive';
-        g.fillStyle = '#422415';
-        g.textAlign = 'center';
-        g.fillText(`${d.name} · Memories`, 0, ph / 2 - 24);
-        g.restore();
 
         // 9. Kertas Memo Pesan (y: 920 - 1700)
         const paperW = 920, paperH = 750, paperX = (W - paperW) / 2, paperY = 925;
@@ -717,6 +812,72 @@ const storyModal = (() => {
         });
     }
 
+    function updateNativeShare(blob) {
+        if (navigator.canShare && blob) {
+            const testFile = new File([blob], currentDownloadName || `HO10-${currentDivisionName}-Story.png`, { type: 'image/png' });
+            if (navigator.canShare({ files: [testFile] })) {
+                btnNative.hidden = false;
+                return;
+            }
+        }
+        btnNative.hidden = true;
+    }
+
+    async function selectOption(idx) {
+        if (!currentOptions.length) return;
+        currentOptIndex = (idx + currentOptions.length) % currentOptions.length;
+        const opt = currentOptions[currentOptIndex];
+
+        if (tabsContainer) {
+            const btns = tabsContainer.querySelectorAll('.share-tab-btn');
+            btns.forEach((btn, i) => {
+                const isActive = i === currentOptIndex;
+                btn.classList.toggle('active', isActive);
+                btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+            });
+        }
+
+        if (opt.mode === 'all') {
+            currentDownloadName = `HO10-${currentDivisionName}-Story-Semua.png`;
+        } else if (typeof opt.mode === 'number') {
+            currentDownloadName = `HO10-${currentDivisionName}-Story-Foto${opt.mode + 1}.png`;
+        } else {
+            currentDownloadName = `HO10-${currentDivisionName}-Story.png`;
+        }
+
+        if (cachedRenders[opt.id]) {
+            const { blob, dataUrl } = cachedRenders[opt.id];
+            currentBlob = blob;
+            currentDataUrl = dataUrl;
+            previewImg.src = dataUrl;
+            previewImg.hidden = false;
+            loading.hidden = true;
+            btnDownload.disabled = false;
+            updateNativeShare(blob);
+            return;
+        }
+
+        loading.hidden = false;
+        previewImg.hidden = true;
+        btnDownload.disabled = true;
+        btnNative.hidden = true;
+
+        try {
+            const res = await drawStory(activeDivision, activeLoadedPhotos, opt.mode, loadedLogos);
+            cachedRenders[opt.id] = res;
+            currentBlob = res.blob;
+            currentDataUrl = res.dataUrl;
+            previewImg.src = res.dataUrl;
+            previewImg.hidden = false;
+            loading.hidden = true;
+            btnDownload.disabled = false;
+            updateNativeShare(res.blob);
+        } catch (err) {
+            console.error('Error generating story card:', err);
+            loading.innerHTML = `<p style="color:#ff8080">Gagal membuat story card.<br>${err.message}</p>`;
+        }
+    }
+
     async function open(idx, photos) {
         modal.hidden = false;
         loading.hidden = false;
@@ -725,28 +886,68 @@ const storyModal = (() => {
         btnNative.hidden = true;
 
         const d = DIVS[idx];
+        activeDivision = d;
         currentDivisionName = d ? d.name.replace(/[^a-zA-Z0-9]/g, '-') : 'Divisi';
+        cachedRenders = {};
 
         try {
-            const { blob, dataUrl } = await drawStory(d, photos);
-            currentBlob = blob;
-            currentDataUrl = dataUrl;
+            if (!loadedLogos) {
+                loadedLogos = await Promise.all([
+                    loadImageHelper('images/header-img/BW LOGO ORIGINAL.png'),
+                    loadImageHelper('images/header-img/HANGOUT LOGO.png')
+                ]);
+            }
 
-            previewImg.src = dataUrl;
-            previewImg.hidden = false;
-            loading.hidden = true;
-            btnDownload.disabled = false;
+            const pImgs = await Promise.all((photos || []).map(p => loadImageHelper(p)));
+            activeLoadedPhotos = pImgs.filter(Boolean);
 
-            // Periksa dukungan Web Share API untuk file foto
-            if (navigator.canShare && blob) {
-                const testFile = new File([blob], `HO10-${currentDivisionName}-Story.png`, { type: 'image/png' });
-                if (navigator.canShare({ files: [testFile] })) {
-                    btnNative.hidden = false;
+            currentOptions = [];
+            if (activeLoadedPhotos.length > 1) {
+                currentOptions.push({ id: 'all', label: '✨ Semua Foto', mode: 'all' });
+                for (let i = 0; i < activeLoadedPhotos.length; i++) {
+                    currentOptions.push({ id: i, label: `Foto ${i + 1}`, mode: i });
+                }
+            } else if (activeLoadedPhotos.length === 1) {
+                currentOptions.push({ id: 0, label: 'Foto 1', mode: 0 });
+            } else {
+                currentOptions.push({ id: 'empty', label: 'Memo Card', mode: null });
+            }
+
+            if (tabsContainer) {
+                if (currentOptions.length > 1) {
+                    tabsContainer.hidden = false;
+                    tabsContainer.innerHTML = currentOptions.map((opt, i) => `
+                        <button class="share-tab-btn ${i === 0 ? 'active' : ''}" data-idx="${i}" role="tab" aria-selected="${i === 0}">
+                            ${opt.label}
+                        </button>
+                    `).join('');
+                } else {
+                    tabsContainer.hidden = true;
+                    tabsContainer.innerHTML = '';
                 }
             }
+
+            if (navPrev) navPrev.hidden = currentOptions.length <= 1;
+            if (navNext) navNext.hidden = currentOptions.length <= 1;
+
+            await selectOption(0);
+
+            // Pre-render opsi lainnya secara background
+            if (currentOptions.length > 1) {
+                (async () => {
+                    for (let i = 1; i < currentOptions.length; i++) {
+                        const opt = currentOptions[i];
+                        if (!cachedRenders[opt.id]) {
+                            try {
+                                cachedRenders[opt.id] = await drawStory(activeDivision, activeLoadedPhotos, opt.mode, loadedLogos);
+                            } catch (e) {}
+                        }
+                    }
+                })();
+            }
         } catch (err) {
-            console.error('Error generating story card:', err);
-            loading.innerHTML = `<p style="color:#ff8080">Gagal membuat story card.<br>${err.message}</p>`;
+            console.error('Error opening story modal:', err);
+            loading.innerHTML = `<p style="color:#ff8080">Gagal memuat aset story card.<br>${err.message}</p>`;
         }
     }
 
@@ -754,7 +955,7 @@ const storyModal = (() => {
         if (!currentDataUrl) return;
         const a = document.createElement('a');
         a.href = currentDataUrl;
-        a.download = `HO10-${currentDivisionName}-Story.png`;
+        a.download = currentDownloadName || `HO10-${currentDivisionName}-Story.png`;
         document.body.appendChild(a);
         a.click();
         a.remove();
@@ -765,7 +966,7 @@ const storyModal = (() => {
     btnNative.onclick = async () => {
         if (!currentBlob) return;
         try {
-            const file = new File([currentBlob], `HO10-${currentDivisionName}-Story.png`, { type: 'image/png' });
+            const file = new File([currentBlob], currentDownloadName || `HO10-${currentDivisionName}-Story.png`, { type: 'image/png' });
             await navigator.share({
                 title: `A Journey Together - ${currentDivisionName}`,
                 text: `Pesan apresiasi untuk ${currentDivisionName} di HO10 ✨`,
