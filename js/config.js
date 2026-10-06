@@ -33,12 +33,12 @@ const CONFIG = {
 
     // Pesan pembuka (setiap item = satu paragraf, boleh <b>…</b> dan \n)
     intro: [
-        "Makasih yaa udah jadi bagian dari acara ini.",
+        "Hallo Semuanya, Aku mau say thankyouu karena kalian udah jadi bagian dari acara ini.",
         "Mungkin selama persiapan acara sampe hari H kita sibuk dengan tugas masing-masing, ngejar waktu, meeting terus buat mastiin semuanya berjalan.",
         "Tapi apa kamu tau?, Dokum melihat segalanya mulai dari hal yang kamu notice, ngga notice atau sempet notice ga yaaa.",
-        "Kayak pas lagi serius. Lagi panik dikit. Ketawa. Becanda. dan juga Capek.",
+        "Kayak pas lagi serius. Lagi panik dikit. Ketawa. Becanda. dan juga lagi capek-capeknya.",
         "Semua momen random yang akhirnya justru jadi cerita di event kita kali ini.",
-        "Jadi sebelum link dokumentasinya aku bagiin...\naku mau menyampaikan sedikit pesan untuk kalian."
+        "Jadi sebelum link dokumentasinya aku bagiin...\naku mau menyampaikan sedikit afirmasi kecil untuk kalian. yaa walau aku ga pandai merangkai kata kata hehehe"
     ],
 
     // Pesan penutup
