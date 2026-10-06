@@ -35,10 +35,10 @@ const CONFIG = {
     intro: [
         "Hallo Semuanya, Aku mau say thankyouu karena kalian udah jadi bagian dari acara ini.",
         "Mungkin selama persiapan acara sampe hari H kita sibuk dengan tugas masing-masing, ngejar waktu, meeting terus buat mastiin semuanya berjalan.",
-        "Tapi apa kamu tau?, Dokum melihat segalanya mulai dari hal yang kamu notice, ngga notice atau sempet notice ga yaaa.",
-        "Kayak pas lagi serius. Lagi panik dikit. Ketawa. Becanda. dan juga lagi capek-capeknya.",
+        "Tapi apa kamu tau?, Dokum melihat segalanya, bukan hanya dari audio atau visual tapi dari ketulusan hati buat melayani (behh merindinggg) wkwkwk, mulai dari hal yang kamu tahu, ngga tahu atau bahkan ini ada yang tahu ngga yaa?.",
+        "Yaa kayak pas lagi serius, Lagi panik, Ketawa, Becanda, dan juga lagi capek-capeknya.",
         "Semua momen random yang akhirnya justru jadi cerita di event kita kali ini.",
-        "Jadi sebelum link dokumentasinya aku bagiin...\naku mau menyampaikan sedikit afirmasi kecil untuk kalian. yaa walau aku ga pandai merangkai kata kata hehehe"
+        "Jadi sebelum link dokumentasinya aku bagiin...\naku mau menyampaikan sedikit afirmasi kecil buat kalian. yaa walau aku ga pandai merangkai kata kata hehehe"
     ],
 
     // Pesan penutup
@@ -60,7 +60,7 @@ const CONFIG = {
         {
             slug: "tasya-patrick", name: "Tasya & Patrick", emoji: "🌟",
             tagline: "Dua bintang di balik cerita",
-            message: ["Allooo aku mau ngucapin makasih ya udah direct acaranya sampe finish, tentu saja anda kan yang pusing, ngurusin ini itu dari nol dan sabar ngadepin kita semua, udah emang paling gokill dahhh"],
+            message: ["Allooo aku mau ngucapin makasih ya udah direct acaranya sampe finish, tentu saja anda kan yang paling pusing, ngurusin ini itu dari nol dan sabar ngadepin kita semua, bantu cari solusi ketika ada hal yang ga terduga, udah emang paling gokill dahhh"],
             closing: "Hidup memang mudah, mudah mudahan survive. ✨",
             photos: pics("tasya-patrick", 1)
         },
@@ -68,7 +68,7 @@ const CONFIG = {
             slug: "musik-vocal", name: "Musik Vocal", emoji: "🎤",
             tagline: "Bilangin ke matahari ini yang paling terang",
             message: ["Aku tau di balik kerennya penampilan kalian di panggung pasti banyak banget latihannya, ga cuma di studio aja kann siapa tau di kamar mandi atau di depan kaca, terus belum lagi rasa deg-degan pas mau naik panggung tapi kalian berhasil ngebuktiin kalo semuanya worth it bangett wkwkwk"],
-            closing: " Gue apresiasi kalian segede gedenyaaa",
+            closing: "Gue apresiasi kalian segede gedenyaaa",
             photos: pics("musik-vocal", 3)
         },
         {
@@ -81,7 +81,7 @@ const CONFIG = {
         {
             slug: "event", name: "Event", emoji: "🎪",
             tagline: "Ini nih yang kabur semua pas di rekam",
-            message: ["Gaiss Thankyou yaa, udah ngerangkai acaranya sampai berjalan bener bener tuntas, ngeliat kalian yang repot banget ngurusin banyak hal yang complicated, itu bikin salute banget sihh asli sumpah ini aja ngetik ga pake AI"],
+            message: ["Gaiss Thankyou yaa, udah ngerangkai acaranya sampai berjalan bener bener tuntas, ngeliat kalian yang repot banget ngurusin banyak hal yang complicated, di tambah kalian itu yang paling sering meeting sampe tengah malem padahal besoknya masih harus beraktivitas lagii wkwkwk, itu keren banget sihh asli sumpah ini aja ngetik ga pake AI"],
             closing: "Maju lo semua gue beliin teazzi.",
             photos: pics("event", 3)
         },
@@ -95,14 +95,14 @@ const CONFIG = {
         {
             slug: "marketing-usher", name: "Marketing & Usher", emoji: "📣",
             tagline: "Wajah pertama yang menyambut semua orang",
-            message: ["Dari promosi sampai sambutan di pintu masuk, paling gokil sihh apalagi bisa dapetin peserta lebih dari 230+ orang, tolong dong konsumsi mereka x2 di next event Wkwkwkwk"],
+            message: ["Dari promosi sampai sambutan di pintu masuk, paling gokil sihh apalagi bisa dapetin peserta lebih dari 230+ orang, bisa bikin konten terus bantu bikin rame acara mulai dari bikin konten sosmed sampe nyamar jadi peserta wkwkwk tolong dong konsumsi mereka x2 di next event Wkwkwkwk"],
             closing: "Semoga lelahmu menjadi civic turbo",
             photos: pics("marketing-usher", 3)
         },
         {
             slug: "perlengkapan", name: "Perlengkapan", emoji: "🛠️",
             tagline: "Semuanya ada kalo dia ada",
-            message: ["Angkat, pasang, bongkar, cari barang yang hilang sampe nyediain konsumsi buat tim, itu capeknya kalo di convert jadi saldo gopay bisa kebeli nasi kuning sama siomay lagi."],
+            message: ["Angkat, pasang, bongkar, cari barang yang hilang sampe nyediain konsumsi buat tim, tentu saja divisi kalian itu yang paling resilient dan itu capeknya kalo di convert jadi saldo gopay bisa kebeli nasi kuning sama siomay lagi."],
             closing: "The Real Act of Service gasihhh",
             photos: pics("perlengkapan", 3)
         },
@@ -116,7 +116,7 @@ const CONFIG = {
         {
             slug: "bw-kids", name: "BW Kids", emoji: "🧸",
             tagline: "Tawa kecil, kenangan besar",
-            message: ["Alloo adik adik BW Kids, Aku mau ucapin makasih yaa udah rajin, berani tampil di depan banyak orang, dan bikin suasana Hangout jadi lebih seruu, Buat Papi dan Mami Nanti di save ya foto foto yang ada di drivenya hahaha"],
+            message: ["Alloo adik adik BW Kids, Aku mau ucapin makasih yaa udah rajin, berani tampil di depan banyak orang, dan lagu lagu yang kalian bawain itu jujur suka banget hahaha bikin suasana Hangout jadi lebih seruu, Buat Papi dan Mami Nanti di save ya foto foto yang ada di drivenya hahaha"],
             closing: "Asli lebih jago mereka nyanyinya dari pada aku wkwkwk",
             photos: pics("bw-kids", 2)
         },
