@@ -67,7 +67,7 @@ const CONFIG = {
         {
             slug: "musik-vocal", name: "Musik Vocal", emoji: "🎤",
             tagline: "Bilangin ke matahari ini yang paling terang",
-            message: ["Aku tau di balik kerennya penampilan kalian di panggung pasti banyak banget latihannya, ga cuma di studio aja kann siapa tau di kamar mandi atau di depan kaca, terus belum lagi rasa deg-degan pas mau naik panggung tapi kalian berhasil negbuktiin kalo semuanya worth it bangett wkwkwk"],
+            message: ["Aku tau di balik kerennya penampilan kalian di panggung pasti banyak banget latihannya, ga cuma di studio aja kann siapa tau di kamar mandi atau di depan kaca, terus belum lagi rasa deg-degan pas mau naik panggung tapi kalian berhasil ngebuktiin kalo semuanya worth it bangett wkwkwk"],
             closing: " Gue apresiasi kalian segede gedenyaaa",
             photos: pics("musik-vocal", 3)
         },
