@@ -60,7 +60,7 @@ const CONFIG = {
         {
             slug: "tasya-patrick", name: "Tasya & Patrick", emoji: "🌟",
             tagline: "Dua bintang di balik cerita",
-            message: ["Allooo aku mau ngucapin makasih ya udah direct acaranya sampe finish, tentu saja anda kan yang paling pusing, ngurusin ini itu dari nol dan sabar ngadepin kita semua, bantu cari solusi ketika ada hal yang ga terduga, udah emang paling gokill dahhh"],
+            message: ["Allooo aku mau ngucapin makasih ya udah direct acaranya sampe finish, tentu saja anda kan yang paling pusing, ngurusin ini itu dari nol dan sabar ngadepin kita semua, dan selalu siap bantu cari solusi ketika ada hal yang ga terduga atau jadi kendala di berbagai divisi, udah emang paling gokill dahhh"],
             closing: "Hidup memang mudah, mudah mudahan survive. ✨",
             photos: pics("tasya-patrick", 1)
         },
