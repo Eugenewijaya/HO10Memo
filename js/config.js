@@ -95,7 +95,7 @@ const CONFIG = {
         {
             slug: "marketing-usher", name: "Marketing & Usher", emoji: "📣",
             tagline: "Wajah pertama yang menyambut semua orang",
-            message: ["Dari promosi sampai sambutan di pintu masuk, paling gokil sihh apalagi bisa dapetin peserta lebih dari 230+ orang, bisa bikin konten terus bantu bikin rame acara mulai dari bikin konten sosmed sampe nyamar jadi peserta wkwkwk tolong dong konsumsi mereka x2 di next event Wkwkwkwk"],
+            message: ["Dari promosi sampai sambutan di pintu masuk, paling gokil sihh apalagi bisa dapetin peserta lebih dari 230+ orang, luar biasa sekali bisa bantu bikin rame acara mulai dari bikin konten sosmed sampe nyamar jadi peserta wkwkwk tolong dong konsumsi mereka x2 di next event Wkwkwkwk"],
             closing: "Semoga lelahmu menjadi civic turbo",
             photos: pics("marketing-usher", 3)
         },
